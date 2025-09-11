@@ -1,3 +1,0 @@
-# awsum-lang.org
-
-awsum
