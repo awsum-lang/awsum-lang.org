@@ -1,10 +1,265 @@
 <!DOCTYPE html>
-<html>
-  <head lang="en">
+<html lang="en">
+  <head>
     <meta charset="utf-8" />
+    <title>Awsum — a functional language with strong static typing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Awsum is a functional language with strong static typing, focused on reliability. Targets: JS and Lua. Friendly CLI, formatter, editor support."
+    />
+    <link rel="icon" href="data:," />
+    <style>
+      /* minimal, safe-to-remove styles for readability */
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 2rem auto;
+        max-width: 880px;
+        padding: 0 1rem;
+        font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.25;
+      }
+      pre,
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco,
+          "Liberation Mono", monospace;
+        font-size: 0.95em;
+      }
+      pre {
+        background: rgba(127, 127, 127, 0.08);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        overflow: auto;
+      }
+      kbd {
+        border: 1px solid currentColor;
+        border-radius: 0.3rem;
+        padding: 0 0.25rem;
+        font: inherit;
+        font-size: 0.9em;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+      .muted {
+        opacity: 0.75;
+      }
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      header nav a {
+        margin-left: 1rem;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid rgba(127, 127, 127, 0.35);
+        margin: 2rem 0;
+      }
+    </style>
   </head>
-
   <body>
-    Awsum
+    <header>
+      <h1 id="awsum">Awsum</h1>
+      <nav>
+        <a
+          href="https://github.com/awsum-lang/awsum"
+          target="_blank"
+          rel="noopener"
+          >GitHub</a
+        >
+      </nav>
+    </header>
+
+    <p class="muted">
+      A functional language with strong static typing, focused on reliability.
+    </p>
+
+    <h2 id="key-features">Key features</h2>
+    <ul>
+      <li>Friendly CLI (typecheck, build, run, format)</li>
+      <li>The behavior is tested to be equivalent across targets.</li>
+    </ul>
+
+    <h2 id="targets">Targets</h2>
+    <ul>
+      <li><strong>JS</strong></li>
+      <li><strong>Lua</strong></li>
+    </ul>
+
+    <h2 id="editor-support">Editor support</h2>
+
+    <h3 id="vscode">VSCode</h3>
+    <ul>
+      <li>
+        Install the <em>Awsum</em> extension to enable syntax highlight and code
+        formatting
+      </li>
+      <li>Enable format on save</li>
+    </ul>
+
+    <pre><code>{
+  // settings.json
+  "[awsum]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "awsum-lang.awsum-vscode"
+  }
+}
+</code></pre>
+
+    <h3 id="other-editors">Other editors</h3>
+    <ul>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/spec/grammar.ebnf"
+          target="_blank"
+          rel="noopener"
+          >EBNF grammar</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/editors/textmate/awsum.tmLanguage.json"
+          target="_blank"
+          rel="noopener"
+          >TextMate grammar</a
+        >
+      </li>
+    </ul>
+
+    <h2 id="examples">Examples</h2>
+    <ul>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/hello.aww"
+          target="_blank"
+          rel="noopener"
+          >hello.aww</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/polymorphism.aww"
+          target="_blank"
+          rel="noopener"
+          >polymorphism.aww</a
+        >
+      </li>
+    </ul>
+
+    <h2 id="installation">Installation</h2>
+    <ul>
+      <li>Install Stack via <code>ghcup</code></li>
+      <li>Install Node.js via NVM (for targeting JS)</li>
+      <li>Install Lua via <code>brew install lua</code> (for targeting Lua)</li>
+      <li><code>stack build</code></li>
+      <li><code>stack install</code></li>
+      <li>Make sure <code>~/.local/bin</code> is in <code>PATH</code></li>
+    </ul>
+
+    <h2 id="usage">Usage</h2>
+    <ul>
+      <li>
+        <code>awsum build FILE [-t js] [-o OUT]</code> — compile to target and
+        write to file (or stdout).
+      </li>
+      <li>
+        <code>awsum run FILE [-t js] [--input TEXT | --stdin]</code> — compile
+        to a temp file and execute with the system runtime, passing input to
+        main.
+      </li>
+      <li>
+        <code>awsum check FILE</code> — parse and typecheck; prints
+        <code>OK</code> or a descriptive error.
+      </li>
+      <li>
+        <code>awsum format FILE [-i|--in-place]</code> —
+        <code>render . parse</code> with stable formatting. Preserves comments
+        (including trailing inline), keeps a blank line between top-level
+        blocks, and ends the file with a trailing newline.
+      </li>
+      <li>
+        <code>awsum ast FILE</code> — pretty-print the surface AST (for
+        debugging).
+      </li>
+      <li>
+        <code>awsum core FILE</code> — print elaborated/lowered Core (post type
+        elaboration) (for debugging).
+      </li>
+      <li><code>awsum --version</code> — show version</li>
+    </ul>
+
+    <p>Examples:</p>
+    <pre><code>awsum build test/sources/hello.aww -t js  -o out.js  &amp;&amp; node out.js "world"
+awsum build test/sources/hello.aww -t lua -o out.lua &amp;&amp; lua out.lua "world"
+
+awsum run test/sources/hello.aww -t js  --input "world"
+awsum run test/sources/hello.aww -t lua --input "world"
+
+echo "world" | awsum run test/sources/hello.aww -t js  --stdin
+echo "world" | awsum run test/sources/hello.aww -t lua --stdin
+
+awsum check  test/sources/hello.aww
+awsum format test/sources/hello.aww -i
+awsum ast    test/sources/hello.aww
+awsum core   test/sources/hello.aww
+awsum --version
+</code></pre>
+
+    <h2 id="roadmap">Roadmap</h2>
+    <ul>
+      <li>
+        Equivalent behavior for numbers and strings across different runtimes.
+      </li>
+      <li>
+        All arithmetic operations via Either. No silent underflow, overflow,
+        precision loss. No NaN, Infinity, -0, etc.
+      </li>
+      <li>
+        A compiler aware of dependency between application formats (cli,
+        browser), targets (JS, Lua) and specific effects (Terminal, DOM, Ports)
+        to allow compilation only for a specific set of effects.
+      </li>
+    </ul>
+
+    <h2 id="notes">Notes</h2>
+    <ul>
+      <li>
+        The syntax and semantics is inspired by
+        <a href="https://elm-lang.org/" target="_blank" rel="noopener">Elm</a>.
+      </li>
+      <li>
+        The name is inspired by the <code>AWSUM</code> keyword of the
+        <a
+          href="https://en.wikipedia.org/wiki/LOLCODE"
+          target="_blank"
+          rel="noopener"
+          >LOLCODE</a
+        >
+        language.
+      </li>
+    </ul>
+
+    <hr />
+    <p class="muted">
+      Compiler repository:
+      <a
+        href="https://github.com/awsum-lang/awsum"
+        target="_blank"
+        rel="noopener"
+        >github.com/awsum-lang/awsum</a
+      >
+    </p>
   </body>
 </html>
