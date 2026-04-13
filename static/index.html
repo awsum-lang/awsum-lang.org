@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Awsum is a functional language with strong static typing, focused on reliability. Targets: JS and Lua. Friendly CLI, formatter, editor support."
+      content="Awsum is a functional language with strong static typing, focused on reliability. Targets: LLVM, JVM, CLR, WASM, JS and Lua. Friendly CLI, formatter, editor support."
     />
     <link rel="icon" href="data:," />
     <style>
@@ -94,7 +94,11 @@
 
     <h2 id="targets">Targets</h2>
     <ul>
-      <li><strong>JS</strong></li>
+      <li><strong>LLVM</strong> — native binary via Clang</li>
+      <li><strong>JVM</strong> — Java bytecode</li>
+      <li><strong>CLR</strong> — .NET assembly</li>
+      <li><strong>WASM</strong> — WebAssembly</li>
+      <li><strong>JS</strong> — JavaScript</li>
       <li><strong>Lua</strong></li>
     </ul>
 
@@ -147,6 +151,7 @@
           rel="noopener"
           >hello.aww</a
         >
+        — string concatenation, comments
       </li>
       <li>
         <a
@@ -155,29 +160,45 @@
           rel="noopener"
           >polymorphism.aww</a
         >
+        — higher-order functions, polymorphic types
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/sum-types-and-pattern-matching.aww"
+          target="_blank"
+          rel="noopener"
+          >sum-types-and-pattern-matching.aww</a
+        >
+        — sum types, pattern matching
       </li>
     </ul>
 
     <h2 id="installation">Installation</h2>
     <ul>
       <li>Install Stack via <code>ghcup</code></li>
-      <li>Install Node.js via NVM (for targeting JS)</li>
-      <li>Install Lua via <code>brew install lua</code> (for targeting Lua)</li>
-      <li><code>stack build</code></li>
-      <li><code>stack install</code></li>
+      <li><code>stack build &amp;&amp; stack install</code></li>
       <li>Make sure <code>~/.local/bin</code> is in <code>PATH</code></li>
+    </ul>
+    <p>Target runtimes (install only what you need):</p>
+    <ul>
+      <li><strong>LLVM</strong> — Clang (<code>brew install llvm</code> or system package)</li>
+      <li><strong>JVM</strong> — Java (<code>java</code> in PATH)</li>
+      <li><strong>CLR</strong> — .NET (<code>dotnet</code> in PATH)</li>
+      <li><strong>WASM</strong> — Wasmtime (<code>brew install wasmtime</code>)</li>
+      <li><strong>JS</strong> — Node.js (via NVM)</li>
+      <li><strong>Lua</strong> — <code>brew install lua</code></li>
     </ul>
 
     <h2 id="usage">Usage</h2>
     <ul>
       <li>
-        <code>awsum build FILE [-t js] [-o OUT]</code> — compile to target and
-        write to file (or stdout).
+        <code>awsum build FILE [-t llvm|jvm|clr|wasm|js|lua] [-o OUT]</code> —
+        compile to target and write to file (or stdout).
       </li>
       <li>
-        <code>awsum run FILE [-t js] [--input TEXT | --stdin]</code> — compile
-        to a temp file and execute with the system runtime, passing input to
-        main.
+        <code>awsum run FILE [-t llvm|jvm|clr|wasm|js|lua] [--input TEXT | --stdin]</code>
+        — compile to a temp file and execute with the system runtime, passing
+        input to main.
       </li>
       <li>
         <code>awsum check FILE</code> — parse and typecheck; prints
@@ -186,8 +207,8 @@
       <li>
         <code>awsum format FILE [-i|--in-place]</code> —
         <code>render . parse</code> with stable formatting. Preserves comments
-        (including trailing inline), keeps a blank line between top-level
-        blocks, and ends the file with a trailing newline.
+        (including trailing inline and inside case blocks), keeps a blank line
+        between top-level blocks, and ends the file with a trailing newline.
       </li>
       <li>
         <code>awsum ast FILE</code> — pretty-print the surface AST (for
@@ -197,18 +218,23 @@
         <code>awsum core FILE</code> — print elaborated/lowered Core (post type
         elaboration) (for debugging).
       </li>
+      <li>
+        <code>awsum asm FILE [-t jvm|clr|wasm]</code> — print target assembly
+        text (for debugging).
+      </li>
       <li><code>awsum --version</code> — show version</li>
     </ul>
 
     <p>Examples:</p>
-    <pre><code>awsum build test/sources/hello.aww -t js  -o out.js  &amp;&amp; node out.js "world"
+    <pre><code>awsum run test/sources/hello.aww -t llvm --input "world"
+awsum run test/sources/hello.aww -t jvm  --input "world"
+awsum run test/sources/hello.aww -t clr  --input "world"
+awsum run test/sources/hello.aww -t wasm --input "world"
+awsum run test/sources/hello.aww -t js   --input "world"
+awsum run test/sources/hello.aww -t lua  --input "world"
+
+awsum build test/sources/hello.aww -t js  -o out.js  &amp;&amp; node out.js "world"
 awsum build test/sources/hello.aww -t lua -o out.lua &amp;&amp; lua out.lua "world"
-
-awsum run test/sources/hello.aww -t js  --input "world"
-awsum run test/sources/hello.aww -t lua --input "world"
-
-echo "world" | awsum run test/sources/hello.aww -t js  --stdin
-echo "world" | awsum run test/sources/hello.aww -t lua --stdin
 
 awsum check  test/sources/hello.aww
 awsum format test/sources/hello.aww -i
@@ -228,8 +254,9 @@ awsum --version
       </li>
       <li>
         A compiler aware of dependency between application formats (cli,
-        browser), targets (JS, Lua) and specific effects (Terminal, DOM, Ports)
-        to allow compilation only for a specific set of effects.
+        browser), targets (LLVM, JVM, CLR, WASM, JS, Lua) and specific effects
+        (Terminal, DOM, Ports) to allow compilation only for a specific set of
+        effects.
       </li>
     </ul>
 
