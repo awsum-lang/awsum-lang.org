@@ -109,8 +109,8 @@
       for LLVM and JVM, both produce identical output — not by convention, but
       by design. Unlike Haskell/GHC vs GHCJS or PureScript's backends, Awsum
       treats cross-target equivalence as a compiler invariant, not a best-effort
-      goal. The test suite verifies 900+ programs byte-identically across all
-      six backends.
+      goal. The test suite runs 58 programs end-to-end on all six backends and
+      asserts byte-identical stdout on every commit.
     </p>
 
     <p>
@@ -124,20 +124,24 @@
     </p>
 
     <p>
-      <strong>Honest arithmetic.</strong> All arithmetic operations return
-      <code>Either</code> — no silent overflow, underflow, precision loss,
-      <code>NaN</code>, <code>Infinity</code>, or <code>-0</code>. If a
-      computation can fail, the type tells you. This is stricter than Elm
-      (which inherits JS number semantics) and more explicit than Rust (where
-      integer overflow is UB in release builds).
+      <strong>Honest arithmetic.</strong> Arithmetic that can over- or
+      underflow returns <code>Either</code>, not a silently-wrapped result.
+      Today the prelude exposes
+      <code
+        >predInt32 / succInt32 : Int32 -&gt; Either {Underflow,Overflow}Error
+        Int32</code
+      >
+      and the same shape for <code>UInt8</code>. Every operation that can fail
+      says so in its type; the programmer decides how to handle it, and the
+      compiler cannot "just return zero" or <code>NaN</code>.
     </p>
 
     <p>
-      <strong>Platform effects are compile-time gated.</strong> Effects like
-      <code>Window</code>, <code>Terminal</code>, or <code>DOM</code> are tied
-      to compilation targets. If an effect isn't available on the platform, the
-      program doesn't compile — no runtime surprises. The compiler knows what
-      each target can do.
+      <strong>Platform effects are compile-time gated.</strong> Effects are
+      tied to the compilation target. Today the CLI program type exposes
+      <code>IO.Stdout.print</code>, and a program using it cannot be compiled
+      for a target that doesn't support it. "Not supported" is a compile
+      error, never a runtime surprise.
     </p>
 
     <h2 id="targets">Targets</h2>
@@ -174,7 +178,7 @@
         <tr>
           <td><strong>JS</strong></td>
           <td>Node.js, browser (planned)</td>
-          <td>Node.js 14+</td>
+          <td>Node.js 22+ (LTS)</td>
         </tr>
         <tr>
           <td><strong>Lua</strong></td>
@@ -210,10 +214,7 @@
         Inline error diagnostics (red squigglies) and warnings (yellow
         squigglies, theme-aware)
       </li>
-      <li>
-        Quick fixes (lightbulb) for unused bindings and matching ignored
-        constructors
-      </li>
+      <li>Quick fixes (lightbulb) for unused bindings</li>
       <li>
         Outline view, breadcrumbs, and in-file symbol navigation (<kbd
           >Ctrl+Shift+O</kbd
@@ -436,12 +437,22 @@ awsum --version
       </li>
       <li>
         <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md"
+          target="_blank"
+          rel="noopener"
+          >Platform version policy</a
+        >
+        — which runtime versions each backend targets and why (latest LTS for
+        server / browser, oldest manufacturer-supported for mobile).
+      </li>
+      <li>
+        <a
           href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
           target="_blank"
           rel="noopener"
           >Roadmap</a
         >
-        — language, AI tooling, platform policy, and assorted unlanded items.
+        — general directions for future work.
       </li>
     </ul>
 
@@ -513,11 +524,9 @@ awsum --version
       </li>
     </ol>
 
-    <h2 id="roadmap">Roadmap</h2>
+    <h2 id="status">What's implemented</h2>
 
-    <p>
-      Landed (verified by the test suite on all six backends):
-    </p>
+    <p>Verified by the test suite on all six backends:</p>
 
     <ul>
       <li>Cross-target equivalent stdout — compiler invariant</li>
@@ -525,47 +534,40 @@ awsum --version
         Stack-safe recursion (self / mutual / non-tail) via SCC merge + CPS +
         TCO
       </li>
-      <li>Sum types, exhaustive pattern matching, polymorphic functions</li>
       <li>
-        Honest <code>Either</code>-based arithmetic pattern (e.g.
-        <code>predInt32 : Int32 -&gt; Either UnderflowError Int32</code>)
+        Sum types (parametric, empty / uninhabited), exhaustive pattern
+        matching, polymorphic type variables, first-class constructors
+      </li>
+      <li>
+        <code>Int32</code> and <code>UInt8</code> integer types with
+        compile-time range validation of literals
+      </li>
+      <li>
+        Prelude-visible types (<code>Bool</code>, <code>Either a b</code>,
+        <code>Maybe a</code>, <code>UnderflowError</code>,
+        <code>OverflowError</code>) and helpers (<code>(++)</code>,
+        <code>not</code>, <code>and</code>, <code>or</code>,
+        <code>show</code> / <code>pred</code> / <code>succ</code> /
+        <code>eq</code> on <code>Int32</code> / <code>UInt8</code>)
+      </li>
+      <li>
+        Honest <code>Either</code>-based arithmetic for
+        <code>predInt32</code> / <code>succInt32</code> /
+        <code>predUInt8</code> / <code>succUInt8</code>
       </li>
       <li>Compile-time platform-effect gating (CLI program type)</li>
       <li>Whole-program reachability tree-shake</li>
     </ul>
 
-    <p>Planned (see the linked roadmap documents for details):</p>
-
-    <ul>
-      <li>
-        Remaining honest-arithmetic primitives (<code>succ</code>,
-        <code>add</code>, <code>sub</code>, <code>mul</code>, <code>div</code>,
-        comparisons, converters, <code>Bool</code> in prelude)
-      </li>
-      <li>Let-bindings, where-clauses</li>
-      <li>Modules and multi-file projects</li>
-      <li>
-        Browser and library program types; more platform-effect tables
-        (<code>Window</code>, <code>DOM</code>, <code>Ports</code>)
-      </li>
-      <li>
-        Type classes, monads, <code>do</code>-notation (desugared to
-        <code>&gt;&gt;=</code> before Core)
-      </li>
-      <li>
-        Monadic recursion — same SCC + CPS machinery applies once classes and
-        monads land; <code>MonadRec</code> / <code>tailRecM</code> for exotic
-        monads
-      </li>
-      <li>
-        MCP server exposing compiler intelligence to AI agents; EBNF-constrained
-        generation
-      </li>
-      <li>
-        Mobile targets: Android via JVM, iOS via LLVM, with separate
-        <code>IOS.*</code> / <code>Android.*</code> effect namespaces
-      </li>
-    </ul>
+    <p>
+      For directions under consideration, see the
+      <a
+        href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
+        target="_blank"
+        rel="noopener"
+        >roadmap</a
+      >.
+    </p>
 
     <h2 id="notes">Notes</h2>
     <ul>

@@ -16,12 +16,7 @@ static/
 
 - **Hosted on**: GitHub Pages
 - **Domain**: awsum-lang.org
-- **Auto-deploy**: Push to `main` triggers GitHub Actions workflow
-
-```bash
-# Manual deployment (usually automatic via CI)
-git push origin main
-```
+- **Trigger**: manual only (`workflow_dispatch`). Auto-deploy on push is intentionally disabled so that `main` can accumulate changes without going live — the site goes out together with the next compiler release, not before. Run the workflow by hand from the Actions tab when the release window opens.
 
 ## Content Sections
 
