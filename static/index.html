@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Awsum — a functional language with strong static typing</title>
+    <title>Awsum — a functional language where results are equivalent across targets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Awsum is a functional language with strong static typing, focused on reliability. Targets: JS and Lua. Friendly CLI, formatter, editor support."
+      content="Awsum is a functional language where computation results are guaranteed equivalent across all compilation targets (LLVM, JVM, CLR, WASM, JS, Lua). Stack-safe recursion by default, honest Either-based arithmetic, compile-time platform effects."
     />
     <link rel="icon" href="data:," />
     <style>
@@ -49,6 +49,21 @@
       ul {
         padding-left: 1.25rem;
       }
+      table {
+        border-collapse: collapse;
+        margin: 0.5rem 0 1rem;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid rgba(127, 127, 127, 0.35);
+        padding: 0.4rem 0.7rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: rgba(127, 127, 127, 0.08);
+      }
       .muted {
         opacity: 0.75;
       }
@@ -83,31 +98,133 @@
     </header>
 
     <p class="muted">
-      A functional language with strong static typing, focused on reliability.
+      A functional language where computation results are guaranteed equivalent
+      across all compilation targets.
     </p>
 
-    <h2 id="key-features">Key features</h2>
-    <ul>
-      <li>Friendly CLI (typecheck, build, run, format)</li>
-      <li>The behavior is tested to be equivalent across targets.</li>
-    </ul>
+    <h2 id="why-awsum">Why Awsum</h2>
+
+    <p>
+      <strong>Equivalent results everywhere.</strong> When a program compiles
+      for LLVM and JVM, both produce identical output — not by convention, but
+      by design. Unlike Haskell/GHC vs GHCJS or PureScript's backends, Awsum
+      treats cross-target equivalence as a compiler invariant, not a best-effort
+      goal. The test suite runs 58 programs end-to-end on all six backends and
+      asserts byte-identical stdout on every commit.
+    </p>
+
+    <p>
+      <strong>Stack-safe recursion by default.</strong> Write the recursion that
+      expresses the algorithm — self-recursive, mutual, non-tail, whatever — and
+      the compiler turns it into a loop without a stack frame per call on any
+      backend, including JVM and JS where native cross-method tail calls do not
+      exist. No
+      <code>tailRecM</code> ceremony à la PureScript, no manual CPS transforms.
+      Stress tests run at depths up to 1 000 000 on every target.
+    </p>
+
+    <p>
+      <strong>Honest arithmetic.</strong> Arithmetic that can over- or
+      underflow returns <code>Either</code>, not a silently-wrapped result.
+      Today the prelude exposes
+      <code
+        >predInt32 / succInt32 : Int32 -&gt; Either {Underflow,Overflow}Error
+        Int32</code
+      >
+      and the same shape for <code>UInt8</code>. Every operation that can fail
+      says so in its type; the programmer decides how to handle it, and the
+      compiler cannot "just return zero" or <code>NaN</code>.
+    </p>
+
+    <p>
+      <strong>Platform effects are compile-time gated.</strong> Effects are
+      tied to the compilation target. Today the CLI program type exposes
+      <code>IO.Stdout.print</code>, and a program using it cannot be compiled
+      for a target that doesn't support it. "Not supported" is a compile
+      error, never a runtime surprise.
+    </p>
 
     <h2 id="targets">Targets</h2>
-    <ul>
-      <li><strong>JS</strong></li>
-      <li><strong>Lua</strong></li>
-    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Target</th>
+          <th>Runtime</th>
+          <th>Minimum version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LLVM</strong></td>
+          <td>Native binary via Clang</td>
+          <td>LLVM 15+ (opaque pointers)</td>
+        </tr>
+        <tr>
+          <td><strong>JVM</strong></td>
+          <td>Java bytecode (generated directly, no Jasmin/javac)</td>
+          <td>Java 7+ (CONSTANT_MethodHandle)</td>
+        </tr>
+        <tr>
+          <td><strong>CLR</strong></td>
+          <td>.NET DLL (generated directly, no ilasm/csc)</td>
+          <td>.NET 9+</td>
+        </tr>
+        <tr>
+          <td><strong>WASM</strong></td>
+          <td>WebAssembly via WASI</td>
+          <td>wasmtime (WASI preview 1)</td>
+        </tr>
+        <tr>
+          <td><strong>JS</strong></td>
+          <td>Node.js, browser (planned)</td>
+          <td>Node.js 22+ (LTS)</td>
+        </tr>
+        <tr>
+          <td><strong>Lua</strong></td>
+          <td>Lua interpreter</td>
+          <td>Lua 5.1+</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Every target produces identical stdout for the same input. See
+      <a
+        href="https://github.com/awsum-lang/awsum/blob/main/docs/targets.md"
+        target="_blank"
+        rel="noopener"
+        >Target Implementation Details</a
+      >
+      for how each backend works under the hood.
+    </p>
 
     <h2 id="editor-support">Editor support</h2>
 
     <h3 id="vscode">VSCode</h3>
+
+    <p>
+      Install the <em>Awsum</em> extension to enable:
+    </p>
+
     <ul>
+      <li>Syntax highlighting (including integer literals)</li>
+      <li>Formatting (on save or on demand)</li>
       <li>
-        Install the <em>Awsum</em> extension to enable syntax highlight and code
-        formatting
+        Inline error diagnostics (red squigglies) and warnings (yellow
+        squigglies, theme-aware)
       </li>
-      <li>Enable format on save</li>
+      <li>Quick fixes (lightbulb) for unused bindings</li>
+      <li>
+        Outline view, breadcrumbs, and in-file symbol navigation (<kbd
+          >Ctrl+Shift+O</kbd
+        >
+        / <code>@</code>)
+      </li>
+      <li>Workspace-wide symbol search (<kbd>Ctrl+T</kbd>)</li>
     </ul>
+
+    <p>Recommended settings:</p>
 
     <pre><code>{
   // settings.json
@@ -142,46 +259,105 @@
     <ul>
       <li>
         <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/hello.aww"
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/hello/code/Main.aww"
           target="_blank"
           rel="noopener"
-          >hello.aww</a
+          >hello</a
         >
+        — string concatenation
       </li>
       <li>
         <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/polymorphism.aww"
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/polymorphism/code/Main.aww"
           target="_blank"
           rel="noopener"
-          >polymorphism.aww</a
+          >polymorphism</a
         >
+        — higher-order functions, polymorphic types
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/even-odd-stress/code/Main.aww"
+          target="_blank"
+          rel="noopener"
+          >even-odd-stress</a
+        >
+        — mutual tail recursion at depth 1 000 000, stack-safe on every backend
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/countdown-int32-stress/code/Main.aww"
+          target="_blank"
+          rel="noopener"
+          >countdown-int32-stress</a
+        >
+        — non-tail self-recursion at depth 100 000, same guarantee
       </li>
     </ul>
 
     <h2 id="installation">Installation</h2>
-    <ul>
-      <li>Install Stack via <code>ghcup</code></li>
-      <li>Install Node.js via NVM (for targeting JS)</li>
-      <li>Install Lua via <code>brew install lua</code> (for targeting Lua)</li>
-      <li><code>stack build</code></li>
-      <li><code>stack install</code></li>
-      <li>Make sure <code>~/.local/bin</code> is in <code>PATH</code></li>
-    </ul>
+
+    <h3 id="install-compiler">Compiler</h3>
+
+    <pre><code># Install Stack (Haskell build tool)
+ghcup install stack
+
+# Build and install the compiler
+stack build
+stack install
+
+# Make sure ~/.local/bin is in PATH
+</code></pre>
+
+    <h3 id="install-runtimes">Target runtimes</h3>
+
+    <p>Install only the runtimes for the targets you need:</p>
+
+    <pre><code># LLVM — native binary compiler (opaque pointer support requires 15+)
+brew install llvm@15
+
+# JVM — Java runtime (Java 7+)
+# https://get-coursier.io/
+
+# CLR — .NET runtime (.NET 9+)
+brew install dotnet
+
+# WASM — WebAssembly runtime with WASI support
+brew install wasmtime
+
+# JS — Node.js interpreter
+# https://nodejs.org/
+
+# Lua — Lua interpreter
+brew install lua
+</code></pre>
 
     <h2 id="usage">Usage</h2>
     <ul>
       <li>
-        <code>awsum build FILE [-t js] [-o OUT]</code> — compile to target and
-        write to file (or stdout).
+        <code
+          >awsum build FILE --program-type cli [-t llvm|jvm|clr|wasm|js|lua] [-o
+          OUT]</code
+        >
+        — compile to target and write to file (or stdout). For JVM, CLR, and
+        WASM, outputs binary (<code>.class</code> / <code>.dll</code> /
+        <code>.wasm</code>).
       </li>
       <li>
-        <code>awsum run FILE [-t js] [--input TEXT | --stdin]</code> — compile
-        to a temp file and execute with the system runtime, passing input to
-        main.
+        <code
+          >awsum run FILE --program-type cli [-t llvm|jvm|clr|wasm|js|lua]
+          [--input TEXT | --stdin]</code
+        >
+        — compile to a temp file and execute with the system runtime, passing
+        input to main.
       </li>
       <li>
-        <code>awsum check FILE</code> — parse and typecheck; prints
-        <code>OK</code> or a descriptive error.
+        <code>awsum check FILE --program-type cli [--json] [--strict]</code> —
+        parse, typecheck, and run stack-safety verification. Prints
+        <code>OK</code>, warnings, or an error. With <code>--json</code>, outputs
+        a structured array of diagnostics with source spans and quick-fix
+        edits. With <code>--strict</code>, any warning causes a non-zero exit
+        code (CI-friendly).
       </li>
       <li>
         <code>awsum format FILE [-i|--in-place]</code> —
@@ -190,48 +366,208 @@
         blocks, and ends the file with a trailing newline.
       </li>
       <li>
-        <code>awsum ast FILE</code> — pretty-print the surface AST (for
-        debugging).
+        <code>awsum ast FILE</code> — pretty-print the surface AST (debugging).
       </li>
       <li>
-        <code>awsum core FILE</code> — print elaborated/lowered Core (post type
-        elaboration) (for debugging).
+        <code>awsum core FILE --program-type cli</code> — print elaborated and
+        lowered Core IR (debugging).
       </li>
-      <li><code>awsum --version</code> — show version</li>
+      <li>
+        <code>awsum asm FILE --program-type cli [-t jvm|clr|wasm]</code> — print
+        target assembly text: Jasmin-like for JVM, CIL for CLR, WAT for WASM
+        (debugging).
+      </li>
+      <li>
+        <code>awsum symbols FILE [--json]</code> — list top-level declarations
+        (outline). With <code>--json</code>, emits an LSP-style
+        <code>DocumentSymbol</code> array.
+      </li>
+      <li><code>awsum --version</code> — show version.</li>
     </ul>
 
     <p>Examples:</p>
-    <pre><code>awsum build test/sources/hello.aww -t js  -o out.js  &amp;&amp; node out.js "world"
-awsum build test/sources/hello.aww -t lua -o out.lua &amp;&amp; lua out.lua "world"
+    <pre><code>awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t llvm --input "world"
+awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t jvm  --input "world"
+awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t clr  --input "world"
+awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t wasm --input "world"
+awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t js   --input "world"
+awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t lua  --input "world"
 
-awsum run test/sources/hello.aww -t js  --input "world"
-awsum run test/sources/hello.aww -t lua --input "world"
+awsum build test/sources/successful/hello/code/Main.aww --program-type cli -t llvm -o out.ll  &amp;&amp; clang out.ll -o out &amp;&amp; ./out "world"
+awsum build test/sources/successful/hello/code/Main.aww --program-type cli -t js   -o out.js  &amp;&amp; node out.js "world"
 
-echo "world" | awsum run test/sources/hello.aww -t js  --stdin
-echo "world" | awsum run test/sources/hello.aww -t lua --stdin
-
-awsum check  test/sources/hello.aww
-awsum format test/sources/hello.aww -i
-awsum ast    test/sources/hello.aww
-awsum core   test/sources/hello.aww
+awsum check  test/sources/successful/hello/code/Main.aww --program-type cli
+awsum check  test/sources/successful/hello/code/Main.aww --program-type cli --json
+awsum format test/sources/successful/hello/code/Main.aww -i
+awsum ast    test/sources/successful/hello/code/Main.aww
+awsum core   test/sources/successful/hello/code/Main.aww --program-type cli
 awsum --version
 </code></pre>
 
-    <h2 id="roadmap">Roadmap</h2>
+    <h2 id="design-documents">Design documents</h2>
     <ul>
       <li>
-        Equivalent behavior for numbers and strings across different runtimes.
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/prelude.md"
+          target="_blank"
+          rel="noopener"
+          >Prelude and built-in functions</a
+        >
+        — how types and functions written in Awsum coexist with per-target
+        compiler implementations.
       </li>
       <li>
-        All arithmetic operations via Either. No silent underflow, overflow,
-        precision loss. No NaN, Infinity, -0, etc.
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/recursion.md"
+          target="_blank"
+          rel="noopener"
+          >Recursion</a
+        >
+        — the three-pass pipeline (SCC merge, CPS defunctionalization, TCO)
+        that turns any recursion shape into stack-safe code on every backend.
       </li>
       <li>
-        A compiler aware of dependency between application formats (cli,
-        browser), targets (JS, Lua) and specific effects (Terminal, DOM, Ports)
-        to allow compilation only for a specific set of effects.
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/targets.md"
+          target="_blank"
+          rel="noopener"
+          >Target implementation details</a
+        >
+        — how each backend maps the same program to its native shape.
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md"
+          target="_blank"
+          rel="noopener"
+          >Platform version policy</a
+        >
+        — which runtime versions each backend targets and why (latest LTS for
+        server / browser, oldest manufacturer-supported for mobile).
+      </li>
+      <li>
+        <a
+          href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
+          target="_blank"
+          rel="noopener"
+          >Roadmap</a
+        >
+        — general directions for future work.
       </li>
     </ul>
+
+    <h2 id="design-principles">Design principles</h2>
+    <ol>
+      <li>
+        <strong>Identical results on every target.</strong> The same program
+        produces the same stdout whether compiled for LLVM, JVM, CLR, WASM,
+        JS, or Lua — byte-for-byte, verified by the test suite on every
+        commit. This is a compiler invariant, not a best-effort goal; the
+        rest of the design hangs off it.
+      </li>
+      <li>
+        <strong>Stack safety belongs to the compiler, not the user.</strong>
+        Recursion — tail, non-tail, self, mutual — is normalised at Core
+        level into a shape that runs in bounded stack on every backend,
+        including JVM and JS where native cross-method tail calls do not
+        exist. No manual CPS transforms, no <code>tailRecM</code>, no
+        hand-unrolling. Write the recursion that expresses the algorithm;
+        the compiler makes sure it doesn't fall over.
+      </li>
+      <li>
+        <strong>Effects are platform-aware.</strong> The compiler tracks
+        which effects each target supports. A program using
+        <code>Terminal</code> won't compile for a browser target; a program
+        using <code>Window</code> won't compile for CLI. "Not supported" is
+        a compile error, never a runtime surprise.
+      </li>
+      <li>
+        <strong>Errors are values.</strong> Arithmetic doesn't silently
+        break. Division by zero, overflow, underflow, precision loss — all
+        represented in the type system via <code>Either</code>. The
+        programmer decides how to handle them; the compiler cannot "just
+        return zero" or <code>NaN</code>.
+      </li>
+      <li>
+        <strong>No invisible decisions.</strong> When something has to be
+        chosen, the programmer chooses — not the compiler. No defaulting of
+        integer literals to a type the compiler guessed (ambiguity is
+        rejected with an explicit hint); no silent shadowing of an outer
+        name by an inner one (shadowing is a compile error); no quiet
+        reference to something the programmer marked as unused
+        (<code>_</code>-prefixed bindings cannot be read). The rules are
+        small; the shared root is that nothing meaningful is decided behind
+        the reader's back.
+      </li>
+      <li>
+        <strong>Priority order when trade-offs appear:</strong>
+        <ol>
+          <li>
+            <strong>Correctness</strong> — no runtime exceptions, no
+            platform-behaviour differences, no surprising overflow /
+            underflow / string corruption.
+          </li>
+          <li>
+            <strong>Runtime performance</strong> — generated programs
+            should be fast.
+          </li>
+          <li>
+            <strong>Compilation speed</strong> — the compiler itself can be
+            slower if it produces better output.
+          </li>
+        </ol>
+      </li>
+      <li>
+        <strong>The computer writes the compiler.</strong> Implementation
+        details would be chosen by hand, but choosing by hand got us
+        JavaScript. So the computer chooses. It knows.
+      </li>
+    </ol>
+
+    <h2 id="status">What's implemented</h2>
+
+    <p>Verified by the test suite on all six backends:</p>
+
+    <ul>
+      <li>Cross-target equivalent stdout — compiler invariant</li>
+      <li>
+        Stack-safe recursion (self / mutual / non-tail) via SCC merge + CPS +
+        TCO
+      </li>
+      <li>
+        Sum types (parametric, empty / uninhabited), exhaustive pattern
+        matching, polymorphic type variables, first-class constructors
+      </li>
+      <li>
+        <code>Int32</code> and <code>UInt8</code> integer types with
+        compile-time range validation of literals
+      </li>
+      <li>
+        Prelude-visible types (<code>Bool</code>, <code>Either a b</code>,
+        <code>Maybe a</code>, <code>UnderflowError</code>,
+        <code>OverflowError</code>) and helpers (<code>(++)</code>,
+        <code>not</code>, <code>and</code>, <code>or</code>,
+        <code>show</code> / <code>pred</code> / <code>succ</code> /
+        <code>eq</code> on <code>Int32</code> / <code>UInt8</code>)
+      </li>
+      <li>
+        Honest <code>Either</code>-based arithmetic for
+        <code>predInt32</code> / <code>succInt32</code> /
+        <code>predUInt8</code> / <code>succUInt8</code>
+      </li>
+      <li>Compile-time platform-effect gating (CLI program type)</li>
+      <li>Whole-program reachability tree-shake</li>
+    </ul>
+
+    <p>
+      For directions under consideration, see the
+      <a
+        href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
+        target="_blank"
+        rel="noopener"
+        >roadmap</a
+      >.
+    </p>
 
     <h2 id="notes">Notes</h2>
     <ul>

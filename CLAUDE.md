@@ -6,7 +6,7 @@ Static website for the Awsum programming language hosted on GitHub Pages at http
 
 ```
 static/
-├── index.html    # Main landing page (265 lines, inline CSS)
+├── index.html    # Main landing page (inline CSS, no JS)
 ├── 404.html      # Redirect to main domain
 ├── CNAME         # Custom domain config
 └── robots.txt    # SEO config
@@ -16,22 +16,20 @@ static/
 
 - **Hosted on**: GitHub Pages
 - **Domain**: awsum-lang.org
-- **Auto-deploy**: Push to `main` triggers GitHub Actions workflow
-
-```bash
-# Manual deployment (usually automatic via CI)
-git push origin main
-```
+- **Trigger**: manual only (`workflow_dispatch`). Auto-deploy on push is intentionally disabled so that `main` can accumulate changes without going live — the site goes out together with the next compiler release, not before. Run the workflow by hand from the Actions tab when the release window opens.
 
 ## Content Sections
 
-1. Language overview and features
-2. Compilation targets (JS, Lua)
+1. Why Awsum — four key differentiators (cross-target equivalence, stack-safe recursion, honest arithmetic, compile-time platform effects)
+2. Targets table (LLVM, JVM, CLR, WASM, JS, Lua) with versions
 3. Editor support (VSCode)
-4. Installation instructions
-5. CLI usage documentation
-6. Example programs
-7. Roadmap
+4. Examples with links to the test-suite sources
+5. Installation (compiler + per-target runtimes)
+6. CLI usage documentation
+7. Design documents (links to `docs/` in the compiler repo)
+8. Design principles
+9. Roadmap (landed vs planned)
+10. Notes
 
 ## Design
 
