@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Awsum — a functional language where results are equivalent across targets</title>
+    <title>
+      Awsum — a functional language where results are equivalent across targets
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
@@ -18,8 +20,17 @@
         margin: 2rem auto;
         max-width: 880px;
         padding: 0 1rem;
-        font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-          Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji",
+        font:
+          16px/1.55 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Ubuntu,
+          Cantarell,
+          Noto Sans,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
           "Segoe UI Emoji";
       }
       h1,
@@ -29,7 +40,8 @@
       }
       pre,
       code {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco,
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco,
           "Liberation Mono", monospace;
         font-size: 0.95em;
       }
@@ -118,15 +130,14 @@
       expresses the algorithm — self-recursive, mutual, non-tail, whatever — and
       the compiler turns it into a loop without a stack frame per call on any
       backend, including JVM and JS where native cross-method tail calls do not
-      exist. No
-      <code>tailRecM</code> ceremony à la PureScript, no manual CPS transforms.
-      Stress tests run at depths up to 1 000 000 on every target.
+      exist. No <code>tailRecM</code> ceremony à la PureScript, no manual CPS
+      transforms. Stress tests run at depths up to 1 000 000 on every target.
     </p>
 
     <p>
-      <strong>Honest arithmetic.</strong> Arithmetic that can over- or
-      underflow returns <code>Either</code>, not a silently-wrapped result.
-      Today the prelude exposes
+      <strong>Honest arithmetic.</strong> Arithmetic that can over- or underflow
+      returns <code>Either</code>, not a silently-wrapped result. Today the
+      prelude exposes
       <code
         >predInt32 / succInt32 : Int32 -&gt; Either {Underflow,Overflow}Error
         Int32</code
@@ -137,11 +148,11 @@
     </p>
 
     <p>
-      <strong>Platform effects are compile-time gated.</strong> Effects are
-      tied to the compilation target. Today the CLI program type exposes
+      <strong>Platform effects are compile-time gated.</strong> Effects are tied
+      to the compilation target. Today the CLI program type exposes
       <code>IO.Stdout.print</code>, and a program using it cannot be compiled
-      for a target that doesn't support it. "Not supported" is a compile
-      error, never a runtime surprise.
+      for a target that doesn't support it. "Not supported" is a compile error,
+      never a runtime surprise.
     </p>
 
     <h2 id="targets">Targets</h2>
@@ -203,9 +214,7 @@
 
     <h3 id="vscode">VSCode</h3>
 
-    <p>
-      Install the <em>Awsum</em> extension to enable:
-    </p>
+    <p>Install the <em>awsum-vscode</em> extension to enable:</p>
 
     <ul>
       <li>Syntax highlighting (including integer literals)</li>
@@ -354,10 +363,10 @@ brew install lua
       <li>
         <code>awsum check FILE --program-type cli [--json] [--strict]</code> —
         parse, typecheck, and run stack-safety verification. Prints
-        <code>OK</code>, warnings, or an error. With <code>--json</code>, outputs
-        a structured array of diagnostics with source spans and quick-fix
-        edits. With <code>--strict</code>, any warning causes a non-zero exit
-        code (CI-friendly).
+        <code>OK</code>, warnings, or an error. With <code>--json</code>,
+        outputs a structured array of diagnostics with source spans and
+        quick-fix edits. With <code>--strict</code>, any warning causes a
+        non-zero exit code (CI-friendly).
       </li>
       <li>
         <code>awsum format FILE [-i|--in-place]</code> —
@@ -423,8 +432,8 @@ awsum --version
           rel="noopener"
           >Recursion</a
         >
-        — the three-pass pipeline (SCC merge, CPS defunctionalization, TCO)
-        that turns any recursion shape into stack-safe code on every backend.
+        — the three-pass pipeline (SCC merge, CPS defunctionalization, TCO) that
+        turns any recursion shape into stack-safe code on every backend.
       </li>
       <li>
         <a
@@ -460,56 +469,55 @@ awsum --version
     <ol>
       <li>
         <strong>Identical results on every target.</strong> The same program
-        produces the same stdout whether compiled for LLVM, JVM, CLR, WASM,
-        JS, or Lua — byte-for-byte, verified by the test suite on every
-        commit. This is a compiler invariant, not a best-effort goal; the
-        rest of the design hangs off it.
+        produces the same stdout whether compiled for LLVM, JVM, CLR, WASM, JS,
+        or Lua — byte-for-byte, verified by the test suite on every commit. This
+        is a compiler invariant, not a best-effort goal; the rest of the design
+        hangs off it.
       </li>
       <li>
         <strong>Stack safety belongs to the compiler, not the user.</strong>
-        Recursion — tail, non-tail, self, mutual — is normalised at Core
-        level into a shape that runs in bounded stack on every backend,
-        including JVM and JS where native cross-method tail calls do not
-        exist. No manual CPS transforms, no <code>tailRecM</code>, no
-        hand-unrolling. Write the recursion that expresses the algorithm;
-        the compiler makes sure it doesn't fall over.
+        Recursion — tail, non-tail, self, mutual — is normalised at Core level
+        into a shape that runs in bounded stack on every backend, including JVM
+        and JS where native cross-method tail calls do not exist. No manual CPS
+        transforms, no <code>tailRecM</code>, no hand-unrolling. Write the
+        recursion that expresses the algorithm; the compiler makes sure it
+        doesn't fall over.
       </li>
       <li>
-        <strong>Effects are platform-aware.</strong> The compiler tracks
-        which effects each target supports. A program using
+        <strong>Effects are platform-aware.</strong> The compiler tracks which
+        effects each target supports. A program using
         <code>Terminal</code> won't compile for a browser target; a program
-        using <code>Window</code> won't compile for CLI. "Not supported" is
-        a compile error, never a runtime surprise.
+        using <code>Window</code> won't compile for CLI. "Not supported" is a
+        compile error, never a runtime surprise.
       </li>
       <li>
-        <strong>Errors are values.</strong> Arithmetic doesn't silently
-        break. Division by zero, overflow, underflow, precision loss — all
-        represented in the type system via <code>Either</code>. The
-        programmer decides how to handle them; the compiler cannot "just
-        return zero" or <code>NaN</code>.
+        <strong>Errors are values.</strong> Arithmetic doesn't silently break.
+        Division by zero, overflow, underflow, precision loss — all represented
+        in the type system via <code>Either</code>. The programmer decides how
+        to handle them; the compiler cannot "just return zero" or
+        <code>NaN</code>.
       </li>
       <li>
         <strong>No invisible decisions.</strong> When something has to be
         chosen, the programmer chooses — not the compiler. No defaulting of
-        integer literals to a type the compiler guessed (ambiguity is
-        rejected with an explicit hint); no silent shadowing of an outer
-        name by an inner one (shadowing is a compile error); no quiet
-        reference to something the programmer marked as unused
-        (<code>_</code>-prefixed bindings cannot be read). The rules are
-        small; the shared root is that nothing meaningful is decided behind
-        the reader's back.
+        integer literals to a type the compiler guessed (ambiguity is rejected
+        with an explicit hint); no silent shadowing of an outer name by an inner
+        one (shadowing is a compile error); no quiet reference to something the
+        programmer marked as unused (<code>_</code>-prefixed bindings cannot be
+        read). The rules are small; the shared root is that nothing meaningful
+        is decided behind the reader's back.
       </li>
       <li>
         <strong>Priority order when trade-offs appear:</strong>
         <ol>
           <li>
             <strong>Correctness</strong> — no runtime exceptions, no
-            platform-behaviour differences, no surprising overflow /
-            underflow / string corruption.
+            platform-behaviour differences, no surprising overflow / underflow /
+            string corruption.
           </li>
           <li>
-            <strong>Runtime performance</strong> — generated programs
-            should be fast.
+            <strong>Runtime performance</strong> — generated programs should be
+            fast.
           </li>
           <li>
             <strong>Compilation speed</strong> — the compiler itself can be
@@ -519,8 +527,8 @@ awsum --version
       </li>
       <li>
         <strong>The computer writes the compiler.</strong> Implementation
-        details would be chosen by hand, but choosing by hand got us
-        JavaScript. So the computer chooses. It knows.
+        details would be chosen by hand, but choosing by hand got us JavaScript.
+        So the computer chooses. It knows.
       </li>
     </ol>
 
@@ -546,14 +554,13 @@ awsum --version
         Prelude-visible types (<code>Bool</code>, <code>Either a b</code>,
         <code>Maybe a</code>, <code>UnderflowError</code>,
         <code>OverflowError</code>) and helpers (<code>(++)</code>,
-        <code>not</code>, <code>and</code>, <code>or</code>,
-        <code>show</code> / <code>pred</code> / <code>succ</code> /
-        <code>eq</code> on <code>Int32</code> / <code>UInt8</code>)
+        <code>not</code>, <code>and</code>, <code>or</code>, <code>show</code> /
+        <code>pred</code> / <code>succ</code> / <code>eq</code> on
+        <code>Int32</code> / <code>UInt8</code>)
       </li>
       <li>
-        Honest <code>Either</code>-based arithmetic for
-        <code>predInt32</code> / <code>succInt32</code> /
-        <code>predUInt8</code> / <code>succUInt8</code>
+        Honest <code>Either</code>-based arithmetic for <code>predInt32</code> /
+        <code>succInt32</code> / <code>predUInt8</code> / <code>succUInt8</code>
       </li>
       <li>Compile-time platform-effect gating (CLI program type)</li>
       <li>Whole-program reachability tree-shake</li>
