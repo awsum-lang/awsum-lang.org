@@ -308,15 +308,109 @@
 
     <h3 id="install-compiler">Compiler</h3>
 
-    <pre><code># Install Stack (Haskell build tool)
-ghcup install stack
+    <p>
+      Prebuilt binaries are published on
+      <a
+        href="https://github.com/awsum-lang/awsum/releases"
+        target="_blank"
+        rel="noopener"
+        >GitHub Releases</a
+      >. Pick your platform — the commands below pin to
+      <code>v0.0.3</code>.
+    </p>
 
-# Build and install the compiler
-stack build
-stack install
+    <h4 id="install-compiler-macos">macOS (Apple Silicon)</h4>
 
-# Make sure ~/.local/bin is in PATH
-</code></pre>
+    <ol>
+      <li>
+        <p>
+          Download into <code>~/.local/bin</code> (overwrites any existing
+          copy):
+        </p>
+        <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-macos-aarch64.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+      </li>
+      <li>
+        <p>
+          Verify install — <code>~/.local/bin</code> must be on your
+          <code>PATH</code>:
+        </p>
+        <pre><code>awsum --version</code></pre>
+      </li>
+    </ol>
+
+    <h4 id="install-compiler-linux-x86_64">Linux (x86_64, glibc)</h4>
+
+    <ol>
+      <li>
+        <p>
+          Download into <code>~/.local/bin</code> (overwrites any existing
+          copy):
+        </p>
+        <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-x86_64-gnu.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+      </li>
+      <li>
+        <p>
+          Verify install — <code>~/.local/bin</code> must be on your
+          <code>PATH</code>:
+        </p>
+        <pre><code>awsum --version</code></pre>
+      </li>
+    </ol>
+
+    <h4 id="install-compiler-linux-aarch64">Linux (ARM64, glibc)</h4>
+
+    <ol>
+      <li>
+        <p>
+          Download into <code>~/.local/bin</code> (overwrites any existing
+          copy):
+        </p>
+        <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-aarch64-gnu.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+      </li>
+      <li>
+        <p>
+          Verify install — <code>~/.local/bin</code> must be on your
+          <code>PATH</code>:
+        </p>
+        <pre><code>awsum --version</code></pre>
+      </li>
+    </ol>
+
+    <h4 id="install-compiler-windows">Windows (x86_64, PowerShell)</h4>
+
+    <ol>
+      <li>
+        <p>
+          Download into <code>%LOCALAPPDATA%\Microsoft\WindowsApps</code> —
+          already on your <code>PATH</code> by default since Windows 10
+          (overwrites any existing copy):
+        </p>
+        <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-windows-x86_64.zip"
+$Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
+Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code></pre>
+      </li>
+      <li>
+        <p>Verify install:</p>
+        <pre><code>awsum --version</code></pre>
+      </li>
+    </ol>
+
+    <p class="muted">
+      For other platforms (musl Linux, x86 macOS, BSD), build from source — see
+      <a
+        href="https://github.com/awsum-lang/awsum#installation"
+        target="_blank"
+        rel="noopener"
+        >awsum/README.md</a
+      >.
+    </p>
 
     <h3 id="install-runtimes">Target runtimes</h3>
 
