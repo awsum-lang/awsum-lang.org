@@ -34,9 +34,10 @@ static/
 ## Design
 
 - Pure HTML/CSS, no build tools
-- Dark/light mode support via CSS media queries
-- System fonts, max-width 880px
-- Fully static, zero JavaScript (except 404 redirect)
+- Dark/light mode support via CSS media queries (`prefers-color-scheme`)
+- Web fonts via Google Fonts (Space Grotesk for display, Inter for body, JetBrains Mono for code)
+- max-width ~1140px on desktop, single-column flow that collapses cleanly on mobile
+- Targeted JavaScript only — currently a small inline script for the install-section OS tabs (auto-selects from `navigator.userAgent`). No frameworks, no build step, no analytics
 
 ## Related Repositories
 
