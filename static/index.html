@@ -2,701 +2,773 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>
-      Awsum — a functional language where results are equivalent across targets
-    </title>
+    <title>Awsum — correctness-first, cross-target functional language</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Awsum is a functional language where computation results are guaranteed equivalent across all compilation targets (LLVM, JVM, CLR, WASM, JS, Lua). Stack-safe recursion by default, honest Either-based arithmetic, compile-time platform effects."
+      content="Awsum is a functional language that compiles natively to JVM, CLR, JavaScript, WebAssembly, LLVM, or Lua. Honest arithmetic, stack-safe recursion of any shape, compile-time platform effects, no defaulting, no shadowing, minimal dependency surface."
     />
     <link rel="icon" href="data:," />
     <style>
-      /* minimal, safe-to-remove styles for readability */
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/Inter.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/SpaceGrotesk.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/JetBrainsMono.woff2") format("woff2");
+      }
       :root {
         color-scheme: light dark;
+        --paper: #fafaf7;
+        --paper-2: #f0eee8;
+        --paper-3: #e6e3da;
+        --ink: #1a1a1a;
+        --ink-2: #3a3a36;
+        --ink-3: #6a6a64;
+        --ink-4: #9a9a92;
+        --line: rgba(0, 0, 0, 0.14);
+        --line-soft: rgba(0, 0, 0, 0.08);
+        --line-hair: rgba(0, 0, 0, 0.05);
+        --accent: #d63a14;
+        --font-display:
+          "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto,
+          sans-serif;
+        --font-mono:
+          "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        --font-body:
+          "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, "Noto Sans", Helvetica, Arial, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #0c0e11;
+          --paper-2: #14171c;
+          --paper-3: #1c2027;
+          --ink: #ecebe4;
+          --ink-2: #c7c4b9;
+          --ink-3: #8e8b80;
+          --ink-4: #5a5750;
+          --line: rgba(255, 255, 255, 0.14);
+          --line-soft: rgba(255, 255, 255, 0.08);
+          --line-hair: rgba(255, 255, 255, 0.05);
+          --accent: #e8551d;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
       }
       body {
-        margin: 2rem auto;
-        max-width: 880px;
-        padding: 0 1rem;
-        font:
-          16px/1.55 system-ui,
-          -apple-system,
-          Segoe UI,
-          Roboto,
-          Ubuntu,
-          Cantarell,
-          Noto Sans,
-          Helvetica,
-          Arial,
-          "Apple Color Emoji",
-          "Segoe UI Emoji";
+        font-family: var(--font-body);
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink);
+        background: var(--paper);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      .wrap {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+      @media (max-width: 720px) {
+        .wrap {
+          padding: 0 18px;
+        }
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.12s;
+      }
+      a:hover {
+        border-bottom-color: currentColor;
       }
       h1,
       h2,
-      h3 {
-        line-height: 1.25;
+      h3,
+      h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+        color: var(--ink);
+        margin: 0;
       }
+      p {
+        margin: 0 0 1em;
+      }
+      code,
       pre,
+      kbd {
+        font-family: var(--font-mono);
+        font-size: 0.92em;
+      }
       code {
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco,
-          "Liberation Mono", monospace;
-        font-size: 0.95em;
+        background: var(--paper-2);
+        padding: 0.05em 0.35em;
+        border-radius: 3px;
       }
       pre {
-        background: rgba(127, 127, 127, 0.08);
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        overflow: auto;
+        background: var(--paper-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 6px;
+        padding: 14px 16px;
+        overflow-x: auto;
+        margin: 0 0 16px;
+        line-height: 1.5;
+      }
+      pre code {
+        background: transparent;
+        padding: 0;
+        font-size: 13px;
       }
       kbd {
-        border: 1px solid currentColor;
-        border-radius: 0.3rem;
-        padding: 0 0.25rem;
-        font: inherit;
-        font-size: 0.9em;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        padding: 0 5px;
+        font-size: 0.85em;
+        background: var(--paper-2);
       }
-      ul {
-        padding-left: 1.25rem;
-      }
-      table {
-        border-collapse: collapse;
-        margin: 0.5rem 0 1rem;
-        width: 100%;
-      }
-      th,
-      td {
-        border: 1px solid rgba(127, 127, 127, 0.35);
-        padding: 0.4rem 0.7rem;
-        text-align: left;
-        vertical-align: top;
-      }
-      th {
-        background: rgba(127, 127, 127, 0.08);
-      }
-      .muted {
-        opacity: 0.75;
-      }
-      header {
+
+      /* HEADER */
+      header.site {
+        padding: 22px 0 12px;
         display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 1rem;
-        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
       }
-      header nav a {
-        margin-left: 1rem;
+      header.site nav a {
+        display: inline-flex;
+        align-items: center;
+        border-bottom: none;
       }
-      hr {
+      header.site nav .gh-logo {
+        display: block;
+        height: 20px;
+        width: auto;
+        opacity: 0.85;
+        transition: opacity 0.12s;
+      }
+      header.site nav a:hover .gh-logo {
+        opacity: 1;
+      }
+      @media (prefers-color-scheme: dark) {
+        header.site nav .gh-logo {
+          filter: invert(1);
+        }
+      }
+
+      /* HERO */
+      .hero {
+        padding: 56px 0 32px;
+      }
+      .hero h1 {
+        font-size: clamp(48px, 9vw, 120px);
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+        margin: 0 0 28px;
+      }
+      .hero .lead {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: clamp(20px, 2.6vw, 28px);
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+        color: var(--ink-2);
+        max-width: 820px;
+        margin: 0 0 22px;
+      }
+      .hero .lead b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .hero .sub b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .hero .sub {
+        font-size: 17.5px;
+        color: var(--ink-2);
+        max-width: 760px;
+        line-height: 1.55;
+        margin: 0 0 28px;
+      }
+      /* SECTION HEADERS */
+      .sec-hd {
+        margin: 64px 0 24px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+      }
+      .sec-hd h2 {
+        font-size: clamp(34px, 5vw, 52px);
+        margin: 0 0 14px;
+      }
+      .sec-hd .dek {
+        font-family: var(--font-display);
+        font-size: clamp(16px, 1.8vw, 19px);
+        line-height: 1.4;
+        color: var(--ink-2);
+        max-width: 780px;
+        margin: 0;
+      }
+
+      /* Token coloring for code blocks */
+      .tok-cm {
+        color: var(--ink-3);
+        font-style: italic;
+      }
+
+      /* SUB-SECTION HEADINGS (Install / Usage) */
+      .sub-h3 {
+        font-size: 28px;
+        margin: 32px 0 16px;
+      }
+
+      /* EDITOR */
+      .editor-h4 {
+        font-size: 22px;
+        margin: 0 0 6px;
+      }
+      .editor-link {
+        margin: 0 0 14px;
+      }
+      .editor-other {
+        margin-top: 32px;
+      }
+
+      /* INSTALL TABS */
+      .install-tabs {
+        display: flex;
+        gap: 0;
+        border: 1px solid var(--line);
+        border-radius: 6px 6px 0 0;
+        border-bottom: none;
+        background: var(--paper-2);
+        overflow-x: auto;
+      }
+      .install-tabs button {
+        flex: 1;
+        min-width: 140px;
+        padding: 12px 16px;
+        background: transparent;
         border: none;
-        border-top: 1px solid rgba(127, 127, 127, 0.35);
-        margin: 2rem 0;
+        border-right: 1px solid var(--line-hair);
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+          color 0.12s,
+          background 0.12s;
       }
+      .install-tabs button:last-child {
+        border-right: none;
+      }
+      .install-tabs button:hover {
+        color: var(--ink);
+      }
+      .install-tabs button.active {
+        background: var(--paper-3);
+        color: var(--accent);
+      }
+      .install-panel {
+        display: none;
+        border: 1px solid var(--line);
+        border-radius: 0 0 6px 6px;
+        padding: 18px 22px;
+        background: var(--paper);
+      }
+      .install-panel.active {
+        display: block;
+      }
+      .install-panel ol {
+        margin: 0;
+        padding-left: 22px;
+      }
+      .install-panel ol li {
+        margin-bottom: 10px;
+      }
+      .install-panel ol li:last-child {
+        margin-bottom: 0;
+      }
+      .install-panel pre {
+        margin: 8px 0 0;
+        font-size: 12px;
+      }
+      .install-other {
+        margin-top: 14px;
+      }
+      .install-runtimes {
+        margin-top: 24px;
+      }
+
+      /* CLI */
+      .cli .cmd {
+        margin-bottom: 36px;
+      }
+      .cli .cmd:last-child {
+        margin-bottom: 0;
+      }
+      .cli .cmd h4 {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0;
+        line-height: 1.2;
+        color: var(--ink);
+        margin: 0 0 14px;
+      }
+      .cli .cmd p {
+        margin: 0 0 14px;
+      }
+      .cli-more {
+        margin-top: 28px;
+      }
+
     </style>
   </head>
   <body>
-    <header>
-      <h1 id="awsum">Awsum</h1>
-      <nav>
-        <a
-          href="https://github.com/awsum-lang/awsum"
-          target="_blank"
-          rel="noopener"
-          >GitHub</a
-        >
-      </nav>
-    </header>
+    <div class="wrap">
+      <header class="site">
+        <nav>
+          <a
+            href="https://github.com/awsum-lang/awsum"
+            target="_blank"
+            rel="noopener"
+            aria-label="GitHub"
+          >
+            <img src="github-logo.svg" alt="GitHub" class="gh-logo" />
+          </a>
+        </nav>
+      </header>
 
-    <p class="muted">
-      A functional language where computation results are guaranteed equivalent
-      across all compilation targets.
-    </p>
-
-    <h2 id="why-awsum">Why Awsum</h2>
-
-    <p>
-      <strong>Equivalent results everywhere.</strong> When a program compiles
-      for LLVM and JVM, both produce identical output — not by convention, but
-      by design. Unlike Haskell/GHC vs GHCJS or PureScript's backends, Awsum
-      treats cross-target equivalence as a compiler invariant, not a best-effort
-      goal. The test suite runs 58 programs end-to-end on all six backends and
-      asserts byte-identical stdout on every commit.
-    </p>
-
-    <p>
-      <strong>Stack-safe recursion by default.</strong> Write the recursion that
-      expresses the algorithm — self-recursive, mutual, non-tail, whatever — and
-      the compiler turns it into a loop without a stack frame per call on any
-      backend, including JVM and JS where native cross-method tail calls do not
-      exist. No <code>tailRecM</code> ceremony à la PureScript, no manual CPS
-      transforms. Stress tests run at depths up to 1 000 000 on every target.
-    </p>
-
-    <p>
-      <strong>Honest arithmetic.</strong> Arithmetic that can over- or underflow
-      returns <code>Either</code>, not a silently-wrapped result. Today the
-      prelude exposes
-      <code
-        >predInt32 / succInt32 : Int32 -&gt; Either {Underflow,Overflow}Error
-        Int32</code
-      >
-      and the same shape for <code>UInt8</code>. Every operation that can fail
-      says so in its type; the programmer decides how to handle it, and the
-      compiler cannot "just return zero" or <code>NaN</code>.
-    </p>
-
-    <p>
-      <strong>Platform effects are compile-time gated.</strong> Effects are tied
-      to the compilation target. Today the CLI program type exposes
-      <code>IO.Stdout.print</code>, and a program using it cannot be compiled
-      for a target that doesn't support it. "Not supported" is a compile error,
-      never a runtime surprise.
-    </p>
-
-    <h2 id="targets">Targets</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Target</th>
-          <th>Runtime</th>
-          <th>Minimum version</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>LLVM</strong></td>
-          <td>Native binary via Clang</td>
-          <td>LLVM 15+ (opaque pointers)</td>
-        </tr>
-        <tr>
-          <td><strong>JVM</strong></td>
-          <td>Java bytecode (generated directly, no Jasmin/javac)</td>
-          <td>Java 7+ (CONSTANT_MethodHandle)</td>
-        </tr>
-        <tr>
-          <td><strong>CLR</strong></td>
-          <td>.NET DLL (generated directly, no ilasm/csc)</td>
-          <td>.NET 9+</td>
-        </tr>
-        <tr>
-          <td><strong>WASM</strong></td>
-          <td>WebAssembly via WASI</td>
-          <td>wasmtime (WASI preview 1)</td>
-        </tr>
-        <tr>
-          <td><strong>JS</strong></td>
-          <td>Node.js, browser (planned)</td>
-          <td>Node.js 22+ (LTS)</td>
-        </tr>
-        <tr>
-          <td><strong>Lua</strong></td>
-          <td>Lua interpreter</td>
-          <td>Lua 5.1+</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p>
-      Every target produces identical stdout for the same input. See
-      <a
-        href="https://github.com/awsum-lang/awsum/blob/main/docs/targets.md"
-        target="_blank"
-        rel="noopener"
-        >Target Implementation Details</a
-      >
-      for how each backend works under the hood.
-    </p>
-
-    <h2 id="editor-support">Editor support</h2>
-
-    <h3 id="vscode">VSCode</h3>
-
-    <p>Install the <em>awsum-vscode</em> extension to enable:</p>
-
-    <ul>
-      <li>Syntax highlighting (including integer literals)</li>
-      <li>Formatting (on save or on demand)</li>
-      <li>
-        Inline error diagnostics (red squigglies) and warnings (yellow
-        squigglies, theme-aware)
-      </li>
-      <li>Quick fixes (lightbulb) for unused bindings</li>
-      <li>
-        Outline view, breadcrumbs, and in-file symbol navigation (<kbd
-          >Ctrl+Shift+O</kbd
-        >
-        / <code>@</code>)
-      </li>
-      <li>Workspace-wide symbol search (<kbd>Ctrl+T</kbd>)</li>
-    </ul>
-
-    <p>Recommended settings:</p>
-
-    <pre><code>{
-  // settings.json
-  "[awsum]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "awsum-lang.awsum-vscode"
-  }
-}
-</code></pre>
-
-    <h3 id="other-editors">Other editors</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/spec/grammar.ebnf"
-          target="_blank"
-          rel="noopener"
-          >EBNF grammar</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/editors/textmate/awsum.tmLanguage.json"
-          target="_blank"
-          rel="noopener"
-          >TextMate grammar</a
-        >
-      </li>
-    </ul>
-
-    <h2 id="examples">Examples</h2>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/hello/code/Main.aww"
-          target="_blank"
-          rel="noopener"
-          >hello</a
-        >
-        — string concatenation
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/polymorphism/code/Main.aww"
-          target="_blank"
-          rel="noopener"
-          >polymorphism</a
-        >
-        — higher-order functions, polymorphic types
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/even-odd-stress/code/Main.aww"
-          target="_blank"
-          rel="noopener"
-          >even-odd-stress</a
-        >
-        — mutual tail recursion at depth 1 000 000, stack-safe on every backend
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/test/sources/successful/countdown-int32-stress/code/Main.aww"
-          target="_blank"
-          rel="noopener"
-          >countdown-int32-stress</a
-        >
-        — non-tail self-recursion at depth 100 000, same guarantee
-      </li>
-    </ul>
-
-    <h2 id="installation">Installation</h2>
-
-    <h3 id="install-compiler">Compiler</h3>
-
-    <p>
-      Prebuilt binaries are published on
-      <a
-        href="https://github.com/awsum-lang/awsum/releases"
-        target="_blank"
-        rel="noopener"
-        >GitHub Releases</a
-      >. Pick your platform — the commands below pin to
-      <code>v0.0.3</code>.
-    </p>
-
-    <h4 id="install-compiler-macos">macOS (Apple Silicon)</h4>
-
-    <ol>
-      <li>
-        <p>
-          Download into <code>~/.local/bin</code> (overwrites any existing
-          copy):
+      <!-- HERO -->
+      <section class="hero">
+        <h1>Awsum</h1>
+        <p class="lead">Correctness-first, cross-target functional language.</p>
+        <p class="sub">
+          <b>Correctness-first:</b> No numeric overflow, underflow, or precision
+          loss. No <code>NaN</code>, <code>null</code>, <code>nil</code>, or
+          <code>undefined</code>. No <code>throw</code>, no <code>catch</code>,
+          no <code>panic</code> — errors are values. No stack overflow on tail,
+          non-tail, or even mutual recursion. This trade-off is deliberate:
+          correctness comes ahead of runtime performance, compile speed, and
+          syntactic convenience.
         </p>
-        <pre><code>mkdir -p ~/.local/bin
+        <p class="sub">
+          <b>Cross-target:</b> The same source compiles to JVM, CLR, JavaScript,
+          WebAssembly, LLVM, or Lua, and produces the same result on every one —
+          independent of each target's quirks and built-in types. The compiler
+          accepts only the effects supported by the chosen target and program
+          type.
+        </p>
+      </section>
+
+      <!--  INSTALL -->
+      <header class="sec-hd">
+        <h2>Install</h2>
+        <p class="dek">
+          Prebuilt binaries from
+          <a
+            href="https://github.com/awsum-lang/awsum/releases"
+            target="_blank"
+            rel="noopener"
+            >GitHub Releases</a
+          >
+        </p>
+      </header>
+
+      <div class="install-tabs" data-group="compiler" role="tablist">
+        <button data-os="macos" type="button">macOS (Apple Silicon)</button>
+        <button data-os="linux-x86_64" type="button">Linux (x86_64)</button>
+        <button data-os="linux-arm64" type="button">Linux (aarch64)</button>
+        <button data-os="windows" type="button">Windows (x86_64)</button>
+      </div>
+
+      <div class="install-panel" data-group="compiler" data-os="macos">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
 curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
-      </li>
-      <li>
-        <p>
-          Verify install — <code>~/.local/bin</code> must be on your
-          <code>PATH</code>:
-        </p>
-        <pre><code>awsum --version</code></pre>
-      </li>
-    </ol>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
 
-    <h4 id="install-compiler-linux-x86_64">Linux (x86_64, glibc)</h4>
-
-    <ol>
-      <li>
-        <p>
-          Download into <code>~/.local/bin</code> (overwrites any existing
-          copy):
-        </p>
-        <pre><code>mkdir -p ~/.local/bin
+      <div class="install-panel" data-group="compiler" data-os="linux-x86_64">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
 curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
-      </li>
-      <li>
-        <p>
-          Verify install — <code>~/.local/bin</code> must be on your
-          <code>PATH</code>:
-        </p>
-        <pre><code>awsum --version</code></pre>
-      </li>
-    </ol>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
 
-    <h4 id="install-compiler-linux-aarch64">Linux (ARM64, glibc)</h4>
-
-    <ol>
-      <li>
-        <p>
-          Download into <code>~/.local/bin</code> (overwrites any existing
-          copy):
-        </p>
-        <pre><code>mkdir -p ~/.local/bin
+      <div class="install-panel" data-group="compiler" data-os="linux-arm64">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
 curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
-      </li>
-      <li>
-        <p>
-          Verify install — <code>~/.local/bin</code> must be on your
-          <code>PATH</code>:
-        </p>
-        <pre><code>awsum --version</code></pre>
-      </li>
-    </ol>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
 
-    <h4 id="install-compiler-windows">Windows (x86_64, PowerShell)</h4>
-
-    <ol>
-      <li>
-        <p>
-          Download into <code>%LOCALAPPDATA%\Microsoft\WindowsApps</code> —
-          already on your <code>PATH</code> by default since Windows 10
-          (overwrites any existing copy):
-        </p>
-        <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-windows-x86_64.zip"
+      <div class="install-panel" data-group="compiler" data-os="windows">
+        <ol>
+          <li>
+            <p>
+              Download into <code>%LOCALAPPDATA%\Microsoft\WindowsApps</code> —
+              already on <code>PATH</code> by default since Windows 10
+              (overwrites any existing copy):
+            </p>
+            <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code></pre>
-      </li>
-      <li>
-        <p>Verify install:</p>
-        <pre><code>awsum --version</code></pre>
-      </li>
-    </ol>
-
-    <p class="muted">
-      For other platforms (musl Linux, x86 macOS, BSD), build from source — see
-      <a
-        href="https://github.com/awsum-lang/awsum#installation"
-        target="_blank"
-        rel="noopener"
-        >awsum/README.md</a
-      >.
-    </p>
-
-    <h3 id="install-runtimes">Target runtimes</h3>
-
-    <p>Install only the runtimes for the targets you need:</p>
-
-    <pre><code># LLVM — native binary compiler (opaque pointer support requires 15+)
-brew install llvm@15
-
-# JVM — Java runtime (Java 7+)
-# https://get-coursier.io/
-
-# CLR — .NET runtime (.NET 9+)
-brew install dotnet
-
-# WASM — WebAssembly runtime with WASI support
-brew install wasmtime
-
-# JS — Node.js interpreter
-# https://nodejs.org/
-
-# Lua — Lua interpreter
-brew install lua
-</code></pre>
-
-    <h2 id="usage">Usage</h2>
-    <ul>
-      <li>
-        <code
-          >awsum build FILE --program-type cli [-t llvm|jvm|clr|wasm|js|lua] [-o
-          OUT]</code
-        >
-        — compile to target and write to file (or stdout). For JVM, CLR, and
-        WASM, outputs binary (<code>.class</code> / <code>.dll</code> /
-        <code>.wasm</code>).
-      </li>
-      <li>
-        <code
-          >awsum run FILE --program-type cli [-t llvm|jvm|clr|wasm|js|lua]
-          [--input TEXT | --stdin]</code
-        >
-        — compile to a temp file and execute with the system runtime, passing
-        input to main.
-      </li>
-      <li>
-        <code>awsum check FILE --program-type cli [--json] [--strict]</code> —
-        parse, typecheck, and run stack-safety verification. Prints
-        <code>OK</code>, warnings, or an error. With <code>--json</code>,
-        outputs a structured array of diagnostics with source spans and
-        quick-fix edits. With <code>--strict</code>, any warning causes a
-        non-zero exit code (CI-friendly).
-      </li>
-      <li>
-        <code>awsum format FILE [-i|--in-place]</code> —
-        <code>render . parse</code> with stable formatting. Preserves comments
-        (including trailing inline), keeps a blank line between top-level
-        blocks, and ends the file with a trailing newline.
-      </li>
-      <li>
-        <code>awsum ast FILE</code> — pretty-print the surface AST (debugging).
-      </li>
-      <li>
-        <code>awsum core FILE --program-type cli</code> — print elaborated and
-        lowered Core IR (debugging).
-      </li>
-      <li>
-        <code>awsum asm FILE --program-type cli [-t jvm|clr|wasm]</code> — print
-        target assembly text: Jasmin-like for JVM, CIL for CLR, WAT for WASM
-        (debugging).
-      </li>
-      <li>
-        <code>awsum symbols FILE [--json]</code> — list top-level declarations
-        (outline). With <code>--json</code>, emits an LSP-style
-        <code>DocumentSymbol</code> array.
-      </li>
-      <li><code>awsum --version</code> — show version.</li>
-    </ul>
-
-    <p>Examples:</p>
-    <pre><code>awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t llvm --input "world"
-awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t jvm  --input "world"
-awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t clr  --input "world"
-awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t wasm --input "world"
-awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t js   --input "world"
-awsum run test/sources/successful/hello/code/Main.aww --program-type cli -t lua  --input "world"
-
-awsum build test/sources/successful/hello/code/Main.aww --program-type cli -t llvm -o out.ll  &amp;&amp; clang out.ll -o out &amp;&amp; ./out "world"
-awsum build test/sources/successful/hello/code/Main.aww --program-type cli -t js   -o out.js  &amp;&amp; node out.js "world"
-
-awsum check  test/sources/successful/hello/code/Main.aww --program-type cli
-awsum check  test/sources/successful/hello/code/Main.aww --program-type cli --json
-awsum format test/sources/successful/hello/code/Main.aww -i
-awsum ast    test/sources/successful/hello/code/Main.aww
-awsum core   test/sources/successful/hello/code/Main.aww --program-type cli
-awsum --version
-</code></pre>
-
-    <h2 id="design-documents">Design documents</h2>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/prelude.md"
-          target="_blank"
-          rel="noopener"
-          >Prelude and built-in functions</a
-        >
-        — how types and functions written in Awsum coexist with per-target
-        compiler implementations.
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/recursion.md"
-          target="_blank"
-          rel="noopener"
-          >Recursion</a
-        >
-        — the three-pass pipeline (SCC merge, CPS defunctionalization, TCO) that
-        turns any recursion shape into stack-safe code on every backend.
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/targets.md"
-          target="_blank"
-          rel="noopener"
-          >Target implementation details</a
-        >
-        — how each backend maps the same program to its native shape.
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md"
-          target="_blank"
-          rel="noopener"
-          >Platform version policy</a
-        >
-        — which runtime versions each backend targets and why (latest LTS for
-        server / browser, oldest manufacturer-supported for mobile).
-      </li>
-      <li>
-        <a
-          href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
-          target="_blank"
-          rel="noopener"
-          >Roadmap</a
-        >
-        — general directions for future work.
-      </li>
-    </ul>
-
-    <h2 id="design-principles">Design principles</h2>
-    <ol>
-      <li>
-        <strong>Identical results on every target.</strong> The same program
-        produces the same stdout whether compiled for LLVM, JVM, CLR, WASM, JS,
-        or Lua — byte-for-byte, verified by the test suite on every commit. This
-        is a compiler invariant, not a best-effort goal; the rest of the design
-        hangs off it.
-      </li>
-      <li>
-        <strong>Stack safety belongs to the compiler, not the user.</strong>
-        Recursion — tail, non-tail, self, mutual — is normalised at Core level
-        into a shape that runs in bounded stack on every backend, including JVM
-        and JS where native cross-method tail calls do not exist. No manual CPS
-        transforms, no <code>tailRecM</code>, no hand-unrolling. Write the
-        recursion that expresses the algorithm; the compiler makes sure it
-        doesn't fall over.
-      </li>
-      <li>
-        <strong>Effects are platform-aware.</strong> The compiler tracks which
-        effects each target supports. A program using
-        <code>Terminal</code> won't compile for a browser target; a program
-        using <code>Window</code> won't compile for CLI. "Not supported" is a
-        compile error, never a runtime surprise.
-      </li>
-      <li>
-        <strong>Errors are values.</strong> Arithmetic doesn't silently break.
-        Division by zero, overflow, underflow, precision loss — all represented
-        in the type system via <code>Either</code>. The programmer decides how
-        to handle them; the compiler cannot "just return zero" or
-        <code>NaN</code>.
-      </li>
-      <li>
-        <strong>No invisible decisions.</strong> When something has to be
-        chosen, the programmer chooses — not the compiler. No defaulting of
-        integer literals to a type the compiler guessed (ambiguity is rejected
-        with an explicit hint); no silent shadowing of an outer name by an inner
-        one (shadowing is a compile error); no quiet reference to something the
-        programmer marked as unused (<code>_</code>-prefixed bindings cannot be
-        read). The rules are small; the shared root is that nothing meaningful
-        is decided behind the reader's back.
-      </li>
-      <li>
-        <strong>Priority order when trade-offs appear:</strong>
-        <ol>
-          <li>
-            <strong>Correctness</strong> — no runtime exceptions, no
-            platform-behaviour differences, no surprising overflow / underflow /
-            string corruption.
           </li>
           <li>
-            <strong>Runtime performance</strong> — generated programs should be
-            fast.
-          </li>
-          <li>
-            <strong>Compilation speed</strong> — the compiler itself can be
-            slower if it produces better output.
+            <p>Verify install:</p>
+            <pre><code>awsum --version</code></pre>
           </li>
         </ol>
-      </li>
-      <li>
-        <strong>The computer writes the compiler.</strong> Implementation
-        details would be chosen by hand, but choosing by hand got us JavaScript.
-        So the computer chooses. It knows.
-      </li>
-    </ol>
+      </div>
 
-    <h2 id="status">What's implemented</h2>
-
-    <p>Verified by the test suite on all six backends:</p>
-
-    <ul>
-      <li>Cross-target equivalent stdout — compiler invariant</li>
-      <li>
-        Stack-safe recursion (self / mutual / non-tail) via SCC merge + CPS +
-        TCO
-      </li>
-      <li>
-        Sum types (parametric, empty / uninhabited), exhaustive pattern
-        matching, polymorphic type variables, first-class constructors
-      </li>
-      <li>
-        <code>Int32</code> and <code>UInt8</code> integer types with
-        compile-time range validation of literals
-      </li>
-      <li>
-        Prelude-visible types (<code>Bool</code>, <code>Either a b</code>,
-        <code>Maybe a</code>, <code>UnderflowError</code>,
-        <code>OverflowError</code>) and helpers (<code>(++)</code>,
-        <code>not</code>, <code>and</code>, <code>or</code>, <code>show</code> /
-        <code>pred</code> / <code>succ</code> / <code>eq</code> on
-        <code>Int32</code> / <code>UInt8</code>)
-      </li>
-      <li>
-        Honest <code>Either</code>-based arithmetic for <code>predInt32</code> /
-        <code>succInt32</code> / <code>predUInt8</code> / <code>succUInt8</code>
-      </li>
-      <li>Compile-time platform-effect gating (CLI program type)</li>
-      <li>Whole-program reachability tree-shake</li>
-    </ul>
-
-    <p>
-      For directions under consideration, see the
-      <a
-        href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
-        target="_blank"
-        rel="noopener"
-        >roadmap</a
-      >.
-    </p>
-
-    <h2 id="notes">Notes</h2>
-    <ul>
-      <li>
-        The syntax and semantics is inspired by
-        <a href="https://elm-lang.org/" target="_blank" rel="noopener">Elm</a>.
-      </li>
-      <li>
-        The name is inspired by the <code>AWSUM</code> keyword of the
+      <p class="install-other">
+        For other platforms (musl Linux, x86 macOS, BSD), build from source —
+        see
         <a
-          href="https://en.wikipedia.org/wiki/LOLCODE"
+          href="https://github.com/awsum-lang/awsum#installation"
           target="_blank"
           rel="noopener"
-          >LOLCODE</a
-        >
-        language.
-      </li>
-    </ul>
+          >awsum/README.md</a
+        >.
+      </p>
 
-    <hr />
-    <p class="muted">
-      Compiler repository:
-      <a
-        href="https://github.com/awsum-lang/awsum"
-        target="_blank"
-        rel="noopener"
-        >github.com/awsum-lang/awsum</a
-      >
-    </p>
+      <h3 class="sub-h3">Target runtimes</h3>
+      <p style="font-size: 15.5px; color: var(--ink-2); margin-bottom: 14px">
+        Install only the runtimes for the targets you actually plan to use.
+      </p>
+
+      <div class="install-runtimes">
+        <div class="install-tabs" data-group="runtime" role="tablist">
+          <button data-os="macos" type="button">macOS (Apple Silicon)</button>
+          <button data-os="linux-x86_64" type="button">Linux (x86_64)</button>
+          <button data-os="linux-arm64" type="button">Linux (aarch64)</button>
+          <button data-os="windows" type="button">Windows (x86_64)</button>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="macos">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+brew install llvm@15
+
+<span class="tok-cm"># JVM target — Java 7+</span>
+brew install openjdk
+
+<span class="tok-cm"># CLR target — .NET 9+</span>
+brew install dotnet
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+brew install wasmtime
+
+<span class="tok-cm"># JS target — Node 22+</span>
+brew install node
+
+<span class="tok-cm"># Lua target — 5.1+</span>
+brew install lua</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="linux-x86_64">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+sudo apt-get install -y clang-15
+
+<span class="tok-cm"># JVM target — Java 7+</span>
+sudo apt-get install -y default-jre
+
+<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># Microsoft's APT repo first)</span>
+sudo apt-get install -y dotnet-sdk-9.0
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+<span class="tok-cm"># Lua target — 5.1+</span>
+sudo apt-get install -y lua5.1</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="linux-arm64">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+sudo apt-get install -y clang-15
+
+<span class="tok-cm"># JVM target — Java 7+</span>
+sudo apt-get install -y default-jre
+
+<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># Microsoft's APT repo first)</span>
+sudo apt-get install -y dotnet-sdk-9.0
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+<span class="tok-cm"># Lua target — 5.1+</span>
+sudo apt-get install -y lua5.1</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="windows">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15.0.7 (opaque pointers; 16+ has known issues</span>
+<span class="tok-cm"># with our codegen on Windows runners)</span>
+$Url  = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/LLVM-15.0.7-win64.exe"
+Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\llvm-installer.exe"
+Start-Process -Wait "$env:TEMP\llvm-installer.exe" -ArgumentList "/S"
+
+<span class="tok-cm"># JVM target — Java 7+</span>
+winget install EclipseAdoptium.Temurin.21.JDK
+
+<span class="tok-cm"># CLR target — .NET 9+</span>
+winget install Microsoft.DotNet.SDK.9
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+winget install BytecodeAlliance.Wasmtime
+
+<span class="tok-cm"># JS target — Node 22+</span>
+winget install OpenJS.NodeJS
+
+<span class="tok-cm"># Lua target — 5.1 binaries from</span>
+<span class="tok-cm"># https://luabinaries.sourceforge.net/</span></code></pre>
+        </div>
+      </div>
+
+      <h3 class="sub-h3">Editor Support</h3>
+
+      <h4 class="editor-h4">Visual Studio Code</h4>
+      <p class="editor-link">
+        <a
+          href="https://github.com/awsum-lang/awsum-vscode"
+          target="_blank"
+          rel="noopener"
+          >awsum-vscode extension</a
+        >
+      </p>
+      <p>
+        Syntax highlighting, formatting, inline diagnostics, quick fixes,
+        outline, breadcrumbs, workspace symbols.
+      </p>
+
+      <h4 class="editor-h4 editor-other">Other editors</h4>
+      <ul>
+        <li>
+          <a
+            href="https://github.com/awsum-lang/awsum/blob/main/docs/spec/grammar.ebnf"
+            target="_blank"
+            rel="noopener"
+            >EBNF grammar</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://github.com/awsum-lang/awsum/blob/main/editors/textmate/awsum.tmLanguage.json"
+            target="_blank"
+            rel="noopener"
+            >TextMate grammar</a
+          >
+        </li>
+      </ul>
+
+      <!--  USE -->
+      <header class="sec-hd">
+        <h2>Use</h2>
+      </header>
+
+      <div class="cli">
+        <section class="cmd">
+          <h4>awsum build</h4>
+          <p>
+            Compile your program for a target picked with <code>-t</code>. With
+            <code>-o OUT</code> the result goes to a file; omit it for stdout.
+          </p>
+          <pre><code><span class="tok-cm"># Compile to LLVM IR</span>
+awsum build --program-type cli -t llvm -o out.ll          src/Main.aww
+<span class="tok-cm"># Assemble to native binary with clang, then run</span>
+clang out.ll -o program && ./program "world"
+
+<span class="tok-cm"># Compile to JVM bytecode</span>
+awsum build --program-type cli -t jvm  -o AwsumMain.class src/Main.aww
+<span class="tok-cm"># Run with java</span>
+java AwsumMain "world"
+
+<span class="tok-cm"># Compile to CLR assembly</span>
+awsum build --program-type cli -t clr  -o AwsumMain.dll   src/Main.aww
+<span class="tok-cm"># Run with dotnet</span>
+dotnet AwsumMain.dll "world"
+
+<span class="tok-cm"># Compile to WebAssembly module</span>
+awsum build --program-type cli -t wasm -o out.wasm        src/Main.aww
+<span class="tok-cm"># Run with wasmtime</span>
+wasmtime out.wasm "world"
+
+<span class="tok-cm"># Compile to JavaScript</span>
+awsum build --program-type cli -t js   -o out.js          src/Main.aww
+<span class="tok-cm"># Run with Node.js</span>
+node out.js "world"
+
+<span class="tok-cm"># Compile to Lua</span>
+awsum build --program-type cli -t lua  -o out.lua         src/Main.aww
+<span class="tok-cm"># Run with the Lua interpreter</span>
+lua out.lua "world"</code></pre>
+        </section>
+
+        <section class="cmd">
+          <h4>awsum run</h4>
+          <p>
+            Compile to a temporary location and execute with the matching system
+            runtime in one step — useful for trying things out without leaving
+            build artifacts on disk. Pick the target with
+            <code>-t</code>. Input passed via <code>--input</code> or
+            <code>--stdin</code> reaches <code>main</code> directly.
+          </p>
+          <pre><code><span class="tok-cm"># Run with inline input</span>
+awsum run --program-type cli -t llvm --input "world" src/Main.aww
+
+<span class="tok-cm"># Run with stdin</span>
+echo "world" | awsum run --program-type cli -t llvm --stdin src/Main.aww</code></pre>
+        </section>
+
+        <section class="cmd">
+          <h4>awsum check</h4>
+          <p>
+            Check the program for errors and warnings, without producing any
+            artifact. The fast feedback loop during development.
+          </p>
+          <pre><code><span class="tok-cm"># Human-readable terminal output</span>
+awsum check --program-type cli src/Main.aww
+
+<span class="tok-cm"># JSON output for editor integrations</span>
+awsum check --program-type cli --json src/Main.aww
+
+<span class="tok-cm"># Strict mode — escalate warnings to non-zero exit code (for CI)</span>
+awsum check --program-type cli --strict src/Main.aww</code></pre>
+        </section>
+
+        <section class="cmd">
+          <h4>awsum format</h4>
+          <p>
+            Format the source file. The implementation is "parse, then render".
+          </p>
+          <pre><code><span class="tok-cm"># Format and rewrite the file in place</span>
+awsum format -i src/Main.aww
+
+<span class="tok-cm"># Print formatted source to stdout</span>
+awsum format src/Main.aww</code></pre>
+        </section>
+      </div>
+      <p class="cli-more">
+        Additional inspection commands — <code>ast</code>, <code>core</code>,
+        <code>asm</code>, <code>symbols</code> — see <code>awsum --help</code>.
+      </p>
+
+      <script>
+        (function () {
+          var ua = navigator.userAgent || "";
+          var defaultOs = "macos";
+          if (/Win/i.test(ua)) defaultOs = "windows";
+          else if (/Linux/i.test(ua)) {
+            defaultOs = /aarch64|arm64/i.test(ua)
+              ? "linux-arm64"
+              : "linux-x86_64";
+          }
+
+          function setupGroup(group) {
+            var tabs = document.querySelectorAll(
+              '.install-tabs[data-group="' + group + '"] button',
+            );
+            var panels = document.querySelectorAll(
+              '.install-panel[data-group="' + group + '"]',
+            );
+            function activate(os) {
+              tabs.forEach(function (t) {
+                t.classList.toggle("active", t.dataset.os === os);
+              });
+              panels.forEach(function (p) {
+                p.classList.toggle("active", p.dataset.os === os);
+              });
+            }
+            tabs.forEach(function (t) {
+              t.addEventListener("click", function () {
+                activate(t.dataset.os);
+              });
+            });
+            activate(defaultOs);
+          }
+
+          setupGroup("compiler");
+          setupGroup("runtime");
+        })();
+      </script>
+    </div>
   </body>
 </html>
