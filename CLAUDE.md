@@ -21,7 +21,7 @@ static/
 ## Content Sections
 
 1. Why Awsum — four key differentiators (cross-target equivalence, stack-safe recursion, honest arithmetic, compile-time platform effects)
-2. Targets table (LLVM, JVM, CLR, WASM, JS, Lua) with versions
+2. Targets table (LLVM, JVM, CLR, WASM, JS) with versions
 3. Editor support (VSCode)
 4. Examples with links to the test-suite sources
 5. Installation (compiler + per-target runtimes)
