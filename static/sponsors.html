@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Awsum — correctness-first, cross-target functional language</title>
+    <title>Sponsor Awsum</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Awsum is a functional language that compiles natively to JVM, CLR, JavaScript, WebAssembly, or LLVM. Honest arithmetic, stack-safe recursion of any shape, compile-time platform effects, no defaulting, no shadowing, minimal dependency surface."
+      content="Sponsor Awsum on GitHub Sponsors. Tiers, recognition, and what your support enables for the project."
     />
     <link
       rel="icon"
@@ -190,7 +190,7 @@
         }
       }
 
-      /* HERO */
+      /* HERO (page variant) */
       .hero {
         padding: 56px 0 32px;
       }
@@ -200,30 +200,23 @@
         letter-spacing: -0.04em;
         margin: 0 0 28px;
       }
-      .hero .lead {
-        font-family: var(--font-display);
-        font-weight: 400;
-        font-size: clamp(20px, 2.6vw, 28px);
-        line-height: 1.25;
-        letter-spacing: -0.015em;
-        color: var(--ink-2);
-        max-width: 820px;
-        margin: 0 0 22px;
-      }
-      .hero .lead b {
-        color: var(--ink);
-        font-weight: 600;
-      }
-      .hero .sub b {
-        color: var(--ink);
-        font-weight: 600;
-      }
       .hero .sub {
         font-size: 17.5px;
         color: var(--ink-2);
         max-width: 760px;
         line-height: 1.55;
-        margin: 0 0 28px;
+        margin: 0 0 22px;
+      }
+      .hero .sub b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .hero-page {
+        padding: 40px 0 8px;
+      }
+      .hero-page h1 {
+        font-size: clamp(40px, 6vw, 72px);
+        margin: 0 0 18px;
       }
 
       /* SECTION HEADERS */
@@ -277,7 +270,7 @@
       <header class="site">
         <nav>
           <a href="/docs" class="nav-link">Docs</a>
-          <a href="/sponsors" class="nav-link">Sponsors</a>
+          <a href="/sponsors" class="nav-link active">Sponsors</a>
           <a
             href="https://github.com/awsum-lang/awsum"
             target="_blank"
@@ -290,38 +283,27 @@
       </header>
 
       <!-- HERO -->
-      <section class="hero">
-        <h1>Awsum</h1>
-        <p class="lead">Correctness-first, cross-target functional language.</p>
+      <section class="hero hero-page">
+        <h1>Sponsor Awsum</h1>
         <p class="sub">
-          <b>Correctness-first:</b> No numeric overflow, underflow, or precision
-          loss. No <code>NaN</code>, <code>null</code>, <code>nil</code>, or
-          <code>undefined</code>. No <code>throw</code>, no <code>catch</code>,
-          no <code>panic</code> — errors are values. No stack overflow on tail,
-          non-tail, or even mutual recursion. This trade-off is deliberate:
-          correctness comes ahead of runtime performance, compile speed, and
-          syntactic convenience.
-        </p>
-        <p class="sub">
-          <b>Cross-target:</b> The same source compiles to JVM, CLR, JavaScript,
-          WebAssembly, or LLVM, and produces the same result on every one —
-          independent of each target's quirks and built-in types. The compiler
-          accepts only the effects supported by the chosen target and program
-          type.
-        </p>
-      </section>
-
-      <!-- BACKED BY -->
-      <header class="sec-hd">
-        <h2>Backed by</h2>
-        <p class="dek">
           Awsum is open source, run on personal time and paid for out of
           pocket. Sponsorship turns it into something durable — faster
           releases, faster issue turnaround, lower risk of stalling.
         </p>
+        <p class="sub">
+          Every sponsor also strengthens the case to open-source
+          infrastructure funds (NLnet, Sovereign Tech Fund) reviewing the
+          project in parallel — so a small recurring contribution
+          compounds.
+        </p>
+      </section>
+
+      <!-- CURRENT SPONSORS -->
+      <header class="sec-hd">
+        <h2>Current sponsors</h2>
       </header>
 
-      <div class="backers-empty">No backers yet — be the first.</div>
+      <div class="backers-empty">No sponsors yet — be the first.</div>
 
       <a
         class="cta-sponsor"
