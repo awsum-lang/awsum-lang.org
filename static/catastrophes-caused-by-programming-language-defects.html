@@ -1,0 +1,1906 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Catastrophes Caused by Programming Language Defects — Awsum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Documented incidents where programming language defects — integer overflow, precision loss, division by zero, null dereference, stack overflow — caused deaths, injuries, lost spacecraft, financial collapse, and billions of dollars of damage."
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="favicon-light.svg"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="favicon.svg"
+      media="(prefers-color-scheme: dark)"
+    />
+    <style>
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/Inter.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Space Grotesk";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/SpaceGrotesk.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url("fonts/JetBrainsMono.woff2") format("woff2");
+      }
+      :root {
+        color-scheme: light dark;
+        --paper: #fafafa;
+        --paper-2: #eeeeee;
+        --paper-3: #e2e2e2;
+        --ink: #1a1a1a;
+        --ink-2: #3a3a3a;
+        --ink-3: #6a6a6a;
+        --ink-4: #9a9a9a;
+        --line: rgba(0, 0, 0, 0.14);
+        --line-soft: rgba(0, 0, 0, 0.08);
+        --line-hair: rgba(0, 0, 0, 0.05);
+        --accent: oklch(0.5839 0.1707 241.41);
+        --font-display:
+          "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto,
+          sans-serif;
+        --font-mono:
+          "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+          monospace;
+        --font-body:
+          "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, "Noto Sans", Helvetica, Arial, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #0e0e0e;
+          --paper-2: #161616;
+          --paper-3: #1f1f1f;
+          --ink: #ebebeb;
+          --ink-2: #c4c4c4;
+          --ink-3: #8b8b8b;
+          --ink-4: #575757;
+          --line: rgba(255, 255, 255, 0.14);
+          --line-soft: rgba(255, 255, 255, 0.08);
+          --line-hair: rgba(255, 255, 255, 0.05);
+          --accent: oklch(0.5839 0.1707 241.41);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font-body);
+        font-size: 16.5px;
+        line-height: 1.55;
+        color: var(--ink);
+        background: var(--paper);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      .wrap {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 32px 96px;
+      }
+      @media (max-width: 720px) {
+        .wrap {
+          padding: 0 18px 64px;
+        }
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.12s;
+      }
+      a:hover {
+        border-bottom-color: currentColor;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        color: var(--ink);
+        margin: 0;
+      }
+      p {
+        margin: 0 0 1em;
+      }
+      code,
+      pre,
+      kbd {
+        font-family: var(--font-mono);
+        font-size: 0.92em;
+      }
+      code {
+        background: var(--paper-2);
+        padding: 0.05em 0.35em;
+        border-radius: 3px;
+      }
+
+      /* HEADER */
+      header.site {
+        padding: 22px 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      header.site nav {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+      }
+      header.site nav a {
+        display: inline-flex;
+        align-items: center;
+        border-bottom: none;
+      }
+      header.site nav a.nav-link {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+        color: var(--ink-2);
+        transition: color 0.12s;
+      }
+      header.site nav a.nav-link:hover {
+        color: var(--ink);
+        border-bottom: none;
+      }
+      header.site nav a.nav-link.active {
+        color: var(--ink);
+      }
+      header.site nav .gh-logo {
+        display: block;
+        height: 20px;
+        width: auto;
+        opacity: 0.85;
+        transition: opacity 0.12s;
+      }
+      header.site nav a:hover .gh-logo {
+        opacity: 1;
+      }
+      @media (prefers-color-scheme: dark) {
+        header.site nav .gh-logo {
+          filter: invert(1);
+        }
+      }
+
+      /* HERO */
+      .hero {
+        padding: 56px 0 32px;
+      }
+      .hero-page {
+        padding: 40px 0 8px;
+      }
+      .hero-page h1 {
+        font-size: clamp(36px, 5.6vw, 64px);
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin: 0 0 22px;
+      }
+      .hero .lead {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: clamp(18px, 2.2vw, 22px);
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        color: var(--ink-2);
+        max-width: 860px;
+        margin: 0 0 14px;
+      }
+      .hero .lead b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* SECTION HEADERS */
+      .sec-hd {
+        margin: 64px 0 24px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+      }
+      .sec-hd h2 {
+        font-size: clamp(30px, 4.4vw, 44px);
+        margin: 0 0 6px;
+      }
+      .sec-hd .num {
+        font-family: var(--font-display);
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 8px;
+      }
+
+      /* INCIDENT BLOCKS */
+      .inc {
+        margin: 36px 0 8px;
+      }
+      .inc h3 {
+        font-size: 22px;
+        line-height: 1.2;
+        margin: 0 0 12px;
+      }
+      .inc ul {
+        margin: 0 0 1em;
+        padding-left: 22px;
+      }
+      .inc li {
+        margin-bottom: 6px;
+      }
+      .inc li > p {
+        margin: 0 0 0.5em;
+      }
+      .inc ul ul {
+        margin: 6px 0 0;
+        padding-left: 22px;
+      }
+      .inc ul ul li {
+        margin-bottom: 3px;
+        font-size: 0.95em;
+        color: var(--ink-2);
+      }
+      .inc ul ul li a {
+        word-break: break-word;
+      }
+
+      /* PROSE BLOCKS */
+      .prose {
+        max-width: 860px;
+      }
+      .prose ul {
+        padding-left: 22px;
+      }
+      .prose ul li {
+        margin-bottom: 6px;
+      }
+      .prose ol {
+        padding-left: 22px;
+      }
+      .prose ol li {
+        margin-bottom: 14px;
+      }
+
+      /* QUOTE */
+      blockquote {
+        margin: 18px 0;
+        padding: 8px 0 8px 20px;
+        border-left: 3px solid var(--line);
+        color: var(--ink-2);
+        font-family: var(--font-display);
+        font-size: 19px;
+        line-height: 1.4;
+        font-style: italic;
+        max-width: 860px;
+      }
+
+      /* TABLE */
+      .table-wrap {
+        overflow-x: auto;
+        margin: 12px 0 24px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      table.summary {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 14.5px;
+      }
+      table.summary th,
+      table.summary td {
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line-hair);
+        vertical-align: top;
+      }
+      table.summary thead th {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--ink-3);
+        background: var(--paper-2);
+        border-bottom: 1px solid var(--line);
+      }
+      table.summary tbody tr:last-child td {
+        border-bottom: none;
+      }
+      table.summary tbody tr:hover {
+        background: var(--paper-2);
+      }
+
+      /* CASE-FOR-AWSUM LIST */
+      ol.case {
+        max-width: 860px;
+        padding-left: 22px;
+      }
+      ol.case > li {
+        margin-bottom: 18px;
+      }
+      ol.case > li > strong {
+        color: var(--ink);
+      }
+
+      /* FOOTER NOTE */
+      .footnote {
+        margin-top: 48px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+        font-size: 14.5px;
+        color: var(--ink-3);
+        font-style: italic;
+        max-width: 860px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site">
+        <nav>
+          <a href="/docs" class="nav-link">Docs</a>
+          <a href="/sponsors" class="nav-link">Sponsors</a>
+          <a
+            href="https://github.com/awsum-lang/awsum"
+            target="_blank"
+            rel="noopener"
+            aria-label="GitHub"
+          >
+            <img src="github-logo.svg" alt="GitHub" class="gh-logo" />
+          </a>
+        </nav>
+      </header>
+
+      <!-- HERO -->
+      <section class="hero hero-page">
+        <h1>Catastrophes Caused by Programming Language Defects</h1>
+        <p class="lead">
+          <b>What's covered:</b> documented cases where
+          <code>precision loss</code>, <code>underflow</code>,
+          <code>overflow</code>, <code>division by zero</code>,
+          <code>null pointer dereference</code>/NPE, and
+          <code>stack overflow</code> led to deaths, injuries, aviation
+          accidents, loss of spacecraft, military equipment failures, power
+          plant/grid disruptions, stock exchange crashes, and blockchain
+          incidents.
+        </p>
+        <p class="lead">
+          <b>What's NOT included:</b> missing characters in commands (Mariner 1,
+          Phobos 1), gotofail SSL, race conditions without an arithmetic
+          component, unit conversion errors (Mars Climate Orbiter), sensor
+          failures without overflow. These cases are well-known but belong to
+          other defect classes and therefore don't fit the Awsum argument.
+        </p>
+        <p class="lead">
+          <b>Purpose:</b> justifying the value of Awsum, in which the listed
+          defect classes are eliminated at the language level.
+        </p>
+      </section>
+
+      <!-- 1. AVIATION AND SPACE -->
+      <header class="sec-hd">
+        <h2>Aviation and Space</h2>
+      </header>
+
+      <article class="inc">
+        <h3>1.1. Ariane 5, Flight 501 — June 4, 1996</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> integer overflow during
+            <code>64-bit float → 16-bit signed integer</code> conversion.
+          </li>
+          <li>
+            <strong>What happened:</strong> in the inertial reference system
+            (SRI), the horizontal velocity variable BH exceeded
+            <code>int16</code> bounds because Ariane 5 had higher horizontal
+            velocities than Ariane 4, for which the code was originally written.
+            A hardware exception was raised, both SRIs (primary and backup)
+            simultaneously went into failsafe mode. Diagnostic data from the SRI
+            was interpreted by the main computer as flight data, course
+            deviation, and self-destruction occurred ~37 seconds after launch.
+          </li>
+          <li>
+            <strong>Damage:</strong> loss of the launcher + 4 satellites of the
+            Cluster mission. Direct financial damage — approximately
+            <strong>$370 million</strong> (other estimates up to $500 million
+            including satellite costs). The Ariane 5 program had cost ~$7
+            billion over 10 years of development at that point.
+          </li>
+          <li><strong>Casualties:</strong> none (unmanned launch).</li>
+          <li>
+            <strong>The program was written in Ada.</strong> SRI deliberately
+            did not protect 4 out of 7 variables from overflow to comply with
+            the requirement of "no more than 80% CPU load." This was a conscious
+            decision to forgo protection.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                J.L. Lions et al., "ARIANE 5 Flight 501 Failure: Report by the
+                Inquiry Board", 1996 — the official ESA inquiry, full text
+                mirrored at MIT:
+                <a
+                  href="http://sunnyday.mit.edu/nasa-class/Ariane5-report.html"
+                  target="_blank"
+                  rel="noopener"
+                  >http://sunnyday.mit.edu/nasa-class/Ariane5-report.html</a
+                >
+              </li>
+              <li>
+                ESA, "Ariane 501 — Presentation of Inquiry Board report" (press
+                release):
+                <a
+                  href="https://www.esa.int/Newsroom/Press_Releases/Ariane_501_-_Presentation_of_Inquiry_Board_report"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.esa.int/Newsroom/Press_Releases/Ariane_501_-_Presentation_of_Inquiry_Board_report</a
+                >
+              </li>
+              <li>
+                Wikipedia, Ariane flight V88:
+                <a
+                  href="https://en.wikipedia.org/wiki/Ariane_flight_V88"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.wikipedia.org/wiki/Ariane_flight_V88</a
+                >
+              </li>
+              <li>
+                Prof. Douglas N. Arnold, "The Explosion of the Ariane 5":
+                <a
+                  href="https://www-users.cse.umn.edu/~arnold/disasters/ariane.html"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www-users.cse.umn.edu/~arnold/disasters/ariane.html</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>1.3. Boeing 787 Dreamliner — Generator Control Unit, 2015</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> signed <code>int32</code> overflow in
+            a counter ticking every 10 ms. After 248 days of continuous
+            operation the counter overflows (<code>2^31</code> × 10 ms ≈ 248.55
+            days).
+          </li>
+          <li>
+            <strong>What happened:</strong> all four main GCUs after 248 days of
+            continuous power <strong>simultaneously</strong> go into failsafe.
+            This means loss of all aircraft AC power in any phase of flight,
+            including takeoff and landing. At the time of discovery — no 787 in
+            actual service had reached 248 days, but if it had, the crew would
+            have lost control of the aircraft.
+          </li>
+          <li>
+            <strong>Response:</strong> FAA issued an Airworthiness Directive
+            (AD) requiring full power-off cycles at least every 120 days. Boeing
+            released a software update.
+          </li>
+          <li>
+            <strong>Casualties:</strong> none (the bug was found in the lab
+            before any in-flight incidents).
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                FAA Airworthiness Directive 2015-09-07 (Federal Register,
+                Amendment 39-18153):
+                <a
+                  href="https://www.federalregister.gov/documents/2015/05/01/2015-10066/airworthiness-directives-the-boeing-company-airplanes"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.federalregister.gov/documents/2015/05/01/2015-10066/airworthiness-directives-the-boeing-company-airplanes</a
+                >
+              </li>
+              <li>
+                Avionics International, "Boeing 787 Power Issue to Receive
+                Software Fix":
+                <a
+                  href="https://www.aviationtoday.com/2015/05/05/boeing-787-power-issue-to-receive-software-fix/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.aviationtoday.com/2015/05/05/boeing-787-power-issue-to-receive-software-fix/</a
+                >
+              </li>
+              <li>
+                Engadget:
+                <a
+                  href="https://www.engadget.com/2015-05-01-boeing-787-dreamliner-software-bug.html"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.engadget.com/2015-05-01-boeing-787-dreamliner-software-bug.html</a
+                >
+              </li>
+              <li>
+                Availability Digest (PDF):
+                <a
+                  href="https://availabilitydigest.com/public_articles/1006/787_power_loss.pdf"
+                  target="_blank"
+                  rel="noopener"
+                  >https://availabilitydigest.com/public_articles/1006/787_power_loss.pdf</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <!-- 2. MILITARY EQUIPMENT -->
+      <header class="sec-hd">
+        <h2>Military Equipment</h2>
+      </header>
+
+      <article class="inc">
+        <h3>2.1. Patriot PAC-2, Dhahran — February 25, 1991</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>precision loss</strong> when representing
+            <code>1/10</code> in a 24-bit fixed-point register. Accumulated time
+            drift at a rate of ~0.0034 sec/hour of continuous operation.
+          </li>
+          <li>
+            <strong>What happened:</strong> the battery had been operating
+            continuously for over 100 hours (deployed in a stationary
+            configuration contrary to its original mobile design intended for a
+            few hours of operation per location). By the time of the attack, the
+            internal clock had drifted by 0.342 seconds. Scud velocity ~1.6 km/s
+            — that translates into a range-gate shift of 687 meters. The radar
+            "saw" the target but could not maintain the track (track rejection
+            threshold 137 m), considered it spurious, and removed it. No
+            interception was launched. The Scud struck the barracks of the 14th
+            Quartermaster Detachment.
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>28 dead, ~100 wounded</strong>.
+            This is the first documented case where a
+            <strong>floating-point/fixed-point error cost human lives</strong>.
+          </li>
+          <li>
+            <strong>Context:</strong> two weeks before the incident, on February
+            11, the Israelis reported the issue. The corrected firmware arrived
+            in Dhahran
+            <strong>on February 26 — the day after the strike</strong>.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                GAO/IMTEC-92-26 (official report):
+                <a
+                  href="https://www.gao.gov/assets/imtec-92-26.pdf"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.gao.gov/assets/imtec-92-26.pdf</a
+                >
+              </li>
+              <li>
+                Wikipedia, MIM-104 Patriot:
+                <a
+                  href="https://en.wikipedia.org/wiki/MIM-104_Patriot"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.wikipedia.org/wiki/MIM-104_Patriot</a
+                >
+              </li>
+              <li>
+                Prof. D. Arnold, U Minnesota:
+                <a
+                  href="https://www-users.cse.umn.edu/~arnold/disasters/patriot.html"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www-users.cse.umn.edu/~arnold/disasters/patriot.html</a
+                >
+              </li>
+              <li>
+                Hackaday (notes that this is the first "death from floating
+                point"):
+                <a
+                  href="https://hackaday.com/2015/10/22/an-improvement-to-floating-point-numbers/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://hackaday.com/2015/10/22/an-improvement-to-floating-point-numbers/</a
+                >
+              </li>
+              <li>
+                Stanford course:
+                <a
+                  href="http://nifty.stanford.edu/2003/pests/2002/lectures/07.1_FloatingPoint/Patriot.html"
+                  target="_blank"
+                  rel="noopener"
+                  >http://nifty.stanford.edu/2003/pests/2002/lectures/07.1_FloatingPoint/Patriot.html</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <!-- 3. MEDICAL EQUIPMENT -->
+      <header class="sec-hd">
+        <h2>Medical Equipment</h2>
+      </header>
+
+      <article class="inc">
+        <h3>3.1. Therac-25 — 1985–1987</h3>
+        <ul>
+          <li>
+            <strong>Defect type (1):</strong> race condition (outside our
+            taxonomy — included for completeness).
+          </li>
+          <li>
+            <strong>Defect type (2):</strong>
+            <strong>integer overflow</strong> in the <code>Class3</code> flag
+            variable (1 byte). The program incremented the flag instead of
+            assigning a fixed value. On overflow the flag wrapped to zero,
+            safety checks were bypassed, and the machine fired the electron beam
+            without the X-ray turntable in place — i.e. it hit patients not with
+            the "therapeutic" dose of ~200 rad but with
+            <strong>~25,000 rad</strong> of direct beam.
+          </li>
+          <li>
+            <strong>What happened:</strong> at least 6 serious radiation
+            overdoses in oncology patients in the US and Canada from 1985 to
+            1987.
+          </li>
+          <li>
+            <strong>Damage:</strong>
+            <strong>at least 3 dead, 3+ with severe lifelong injuries</strong>.
+            AECL was hit with an FDA Class I recall. A series of lawsuits, some
+            settled out of court.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Leveson &amp; Turner, "An Investigation of the Therac-25
+                Accidents", IEEE Computer 26(7), 1993 — the canonical analysis
+                (UC eScholarship):
+                <a
+                  href="https://escholarship.org/uc/item/5dr206s3"
+                  target="_blank"
+                  rel="noopener"
+                  >https://escholarship.org/uc/item/5dr206s3</a
+                >
+              </li>
+              <li>
+                Wikipedia, Therac-25:
+                <a
+                  href="https://en.wikipedia.org/wiki/Therac-25"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.wikipedia.org/wiki/Therac-25</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <!-- 5. STOCK EXCHANGES AND FINANCIAL MARKETS -->
+      <header class="sec-hd">
+        <h2>Stock Exchanges and Financial Markets</h2>
+      </header>
+
+      <article class="inc">
+        <h3>5.1. Vancouver Stock Exchange index — 1982–1983</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>systematic precision loss</strong> through
+            <code>floor()</code> (truncation) instead of <code>round()</code>
+            when recalculating the index. ~3000 updates per day, each losing
+            part of the last digit.
+          </li>
+          <li>
+            <strong>What happened:</strong> the index launched in January 1982
+            at 1000.000. By November 1983 it stood at 524.811 — even though the
+            actual market was not declining. The accumulated error was ~25
+            points per month. Over the weekend of November 25–28, 1983 the index
+            was recalculated correctly: on Monday it opened at
+            <strong>1098.892</strong> — a one-time "jump" of +574 points purely
+            from fixing the truncation.
+          </li>
+          <li>
+            <strong>Damage:</strong> direct monetary loss — three weeks of
+            consultant work.
+            <strong>Indirect — several years of distorted market signal</strong
+            >, potential errors in client investment decisions.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Wikipedia, Vancouver Stock Exchange:
+                <a
+                  href="https://en.wikipedia.org/wiki/Vancouver_Stock_Exchange"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.wikipedia.org/wiki/Vancouver_Stock_Exchange</a
+                >
+              </li>
+              <li>
+                McCullough &amp; Vinod (1999), Journal of Economic Literature,
+                summary:
+                <a
+                  href="https://www5.in.tum.de/~huckle/Vancouv.pdf"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www5.in.tum.de/~huckle/Vancouv.pdf</a
+                >
+              </li>
+              <li>
+                Engora:
+                <a
+                  href="https://blog.engora.com/2020/06/death-by-rounding.html"
+                  target="_blank"
+                  rel="noopener"
+                  >https://blog.engora.com/2020/06/death-by-rounding.html</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <!-- 6. BLOCKCHAIN AND DEFI -->
+      <header class="sec-hd">
+        <h2>Blockchain and DeFi</h2>
+      </header>
+
+      <div class="prose">
+        <p>
+          Cryptocurrency protocols have produced two distinct flavours of
+          language-level arithmetic disasters. The earliest — case 6.1 below —
+          was a C++ overflow in Bitcoin Core itself. The later cases (6.2+) come
+          from Solidity prior to version 0.8.0, which lacked checked arithmetic
+          by default and required programmers to use SafeMath manually.
+          Awsum-like guarantees (overflow in any arithmetic produces a
+          compile-time error or explicit handling) would zero out the entire
+          class.
+        </p>
+      </div>
+
+      <article class="inc">
+        <h3>6.1. Bitcoin Value Overflow Incident — August 15, 2010</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> <strong>integer overflow</strong> in
+            the unchecked summation of transaction output values
+            (<code>int64</code>). <code>CTransaction::CheckTransaction()</code>
+            did not validate that the sum of outputs fit in 64 bits — a single
+            transaction could specify outputs whose total wrapped past
+            <code>2^63 − 1</code>. CVE-2010-5139.
+          </li>
+          <li>
+            <strong>What happened:</strong> block <strong>74638</strong>
+            included a transaction with three outputs totalling ~184,467,440,737
+            BTC (two outputs of ~92.2 billion BTC each, plus 0.01 BTC) — i.e.
+            <strong
+              >roughly 8,800× Bitcoin's entire 21-million supply cap</strong
+            >, created in a single transaction.
+          </li>
+          <li>
+            <strong>Response:</strong> Satoshi Nakamoto and Gavin Andresen
+            released a patched client within ~5 hours. The patch added a
+            soft-fork consensus rule rejecting any transaction whose outputs sum
+            to overflow. Network operators switched to the patched client and
+            started mining a parallel chain branching from before block 74638.
+            The patched ("good") chain overtook the unpatched ("bad") chain at
+            block 74691 — effectively
+            <strong
+              >a network-wide reorganization that erased ~53 blocks (~9
+              hours)</strong
+            >
+            of history. The fraudulent transaction does not exist in the
+            canonical chain.
+            <strong
+              >This is the only intentional rollback in Bitcoin's
+              history.</strong
+            >
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>no direct financial loss</strong>
+            — the bad transaction was rolled back before any phantom BTC could
+            enter the wider economy.
+            <strong
+              >The full economic invariant of Bitcoin (21M supply cap) was at
+              stake</strong
+            >: had the bug gone unnoticed, the entire monetary model would have
+            been broken.
+          </li>
+          <li><strong>Casualties:</strong> none.</li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Bitcoin Wiki (CVE-2010-5139):
+                <a
+                  href="https://en.bitcoin.it/wiki/CVE-2010-5139"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.bitcoin.it/wiki/CVE-2010-5139</a
+                >
+              </li>
+              <li>
+                Bitcointalk.org, "Value overflow incident.. August 15, 2010" —
+                primary thread where Satoshi and Gavin Andresen coordinated the
+                patch:
+                <a
+                  href="https://bitcointalk.org/index.php?topic=6290.0"
+                  target="_blank"
+                  rel="noopener"
+                  >https://bitcointalk.org/index.php?topic=6290.0</a
+                >
+              </li>
+              <li>
+                Bitcoin Wiki, Common Vulnerabilities and Exposures:
+                <a
+                  href="https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures"
+                  target="_blank"
+                  rel="noopener"
+                  >https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures</a
+                >
+              </li>
+              <li>
+                Quadriga Initiative incident report:
+                <a
+                  href="https://quadrigainitiative.com/cryptocurrencyhackscamfraudwiki/index.php?title=Bitcoin_Value_Overflow_184_Billion_Minting_Incident"
+                  target="_blank"
+                  rel="noopener"
+                  >https://quadrigainitiative.com/cryptocurrencyhackscamfraudwiki/index.php?title=Bitcoin_Value_Overflow_184_Billion_Minting_Incident</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.2. BatchOverflow (BEC) — April 22, 2018</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> integer overflow in the multiplication
+            <code>uint256(cnt) * _value</code> in the
+            <code>batchTransfer</code> function of the Beauty Ecosystem Coin
+            ERC-20 token.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker passed such
+            <code>_value</code> and a <code>_receivers</code> array of two
+            elements that the product overflowed to <code>0</code>. The sanity
+            check <code>amount &gt; 0</code> was bypassed, after which two
+            addresses received <code>2^255</code> BEC tokens each. The emission
+            exceeded total supply by many orders of magnitude (115 octodecillion
+            tokens).
+          </li>
+          <li>
+            <strong>Damage:</strong> BEC trading collapsed,
+            <strong
+              >OKEx, Poloniex, HitBTC, Huobi Pro suspended deposits/withdrawals
+              of ALL ERC-20 tokens</strong
+            >. CVE-2018-10299.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Wolf Crypto Medium:
+                <a
+                  href="https://medium.com/wolf-crypto/batchoverflow-erc20-vulnerability-5691e42940de"
+                  target="_blank"
+                  rel="noopener"
+                  >https://medium.com/wolf-crypto/batchoverflow-erc20-vulnerability-5691e42940de</a
+                >
+              </li>
+              <li>
+                Verichains:
+                <a
+                  href="https://medium.com/verichains/integer-overflow-simple-but-not-easy-9ebbc58bbaa5"
+                  target="_blank"
+                  rel="noopener"
+                  >https://medium.com/verichains/integer-overflow-simple-but-not-easy-9ebbc58bbaa5</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.3. ProxyOverflow (SMT et al.) — April 24, 2018</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> integer overflow in
+            <code>_fee + _value</code> of the <code>transferProxy</code>/<code
+              >proxyTransfer</code
+            >
+            function of SmartMesh (SMT) and analogs.
+          </li>
+          <li>
+            <strong>What happened:</strong> two days after BEC. The attacker
+            minted <strong>5 octodecillion USD-equivalent in SMT</strong>.
+            Similar vulnerabilities were found in UET (transferFlow), SCA
+            (multiOverflow), HXG (burnOverflow), and ~12 other contracts.
+          </li>
+          <li>
+            <strong>Damage:</strong> repeated trading suspensions on major
+            exchanges, devaluation of affected tokens. CVE-2018-10376.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                PeckShield Medium:
+                <a
+                  href="https://peckshield.medium.com/integer-overflow-i-e-proxyoverflow-bug-found-in-multiple-erc20-smart-contracts-14fecfba2759"
+                  target="_blank"
+                  rel="noopener"
+                  >https://peckshield.medium.com/integer-overflow-i-e-proxyoverflow-bug-found-in-multiple-erc20-smart-contracts-14fecfba2759</a
+                >
+              </li>
+              <li>
+                CryptoSlate:
+                <a
+                  href="https://cryptoslate.com/batchoverflow-exploit-creates-trillions-of-ethereum-tokens/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://cryptoslate.com/batchoverflow-exploit-creates-trillions-of-ethereum-tokens/</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.4. Poolz Finance — March 15, 2023</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong> integer overflow in the unaudited
+            LockedControl contract.
+          </li>
+          <li><strong>Damage:</strong> ~$390k across BSC and Polygon.</li>
+          <li>
+            <strong>Source:</strong> Hacken:
+            <a
+              href="https://hacken.io/discover/smart-contract-vulnerabilities/"
+              target="_blank"
+              rel="noopener"
+              >https://hacken.io/discover/smart-contract-vulnerabilities/</a
+            >
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.5. Raft Protocol — November 10, 2023</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>precision loss</strong> in the share-token mint calculation
+            when the collateral index rate is manipulated.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker took a 6,000 cbETH
+            flash loan from Aave and exploited a precision miscalculation in
+            <code>cbETH</code> collateral handling to mint 6.7 million R tokens
+            (Raft's stablecoin). The freshly-minted R was dumped via
+            Balancer/Uniswap, depegging R by ~50%.
+          </li>
+          <li>
+            <strong>Damage:</strong> ~1,577 ETH drained (≈<strong>$3.3M</strong>
+            in proceeds; ~$6.7M in unbacked R minted). The attacker accidentally
+            burned 1,570 of the stolen ETH to a <code>0x000…dEaD</code> address
+            and walked away with ~7 ETH net.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                CoinDesk:
+                <a
+                  href="https://www.coindesk.com/tech/2023/11/10/defi-platform-raft-suffers-33m-exploit-but-hacker-likely-takes-a-loss-on-the-attack"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.coindesk.com/tech/2023/11/10/defi-platform-raft-suffers-33m-exploit-but-hacker-likely-takes-a-loss-on-the-attack</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.6. Abracadabra Money (Cauldron V4) — January 30, 2024</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>precision loss</strong> in <code>userBorrowPart()</code> /
+            <code>repay()</code> of the Cauldron V4 contract; the rounding gap
+            let recorded total debt drift below actual debt across repeated
+            calls.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker used a flash loan to
+            repeatedly call <code>userBorrowPart()</code> and
+            <code>repay()</code> from inside the V4 Cauldron, paying down other
+            users' positions. The precision-loss bug let recorded total debt
+            artificially shrink, bypassing the insolvency check. The attacker
+            then borrowed MIM against far less collateral than required and
+            dumped it.
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>~$6.5M</strong> (over 2,740 ETH and
+            2.2M MIM); the MIM stablecoin temporarily depegged.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Distributed Networks Institute:
+                <a
+                  href="https://dn.institute/research/cyberattacks/incidents/2024-01-31-abracadabra-money/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://dn.institute/research/cyberattacks/incidents/2024-01-31-abracadabra-money/</a
+                >
+              </li>
+              <li>
+                Extropy.IO analysis:
+                <a
+                  href="https://extropy-io.medium.com/breaking-down-the-6-5m-abracadabra-money-hack-a-detailed-analysis-of-the-cauldron-v4-exploit-44100da10896"
+                  target="_blank"
+                  rel="noopener"
+                  >https://extropy-io.medium.com/breaking-down-the-6-5m-abracadabra-money-hack-a-detailed-analysis-of-the-cauldron-v4-exploit-44100da10896</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.7. Sonne Finance — May 14, 2024</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>rounding / precision loss</strong> in the Compound-fork
+            <code>redeemUnderlying</code> flow when applied to a
+            freshly-created, near-empty market. Same defect class as the April
+            2023 Hundred Finance exploit.
+          </li>
+          <li>
+            <strong>What happened:</strong> after a governance vote added VELO
+            to Sonne, the attacker manipulated the <code>exchangeRate</code> of
+            the empty <code>soVELO</code> market by depositing underlying tokens
+            directly into the contract. The truncating division in the
+            exchange-rate calculation caused 2 wei of <code>soVELO</code> to
+            value at 35,471,603 VELO — redeeming 1 wei drained the pool. Sonne
+            was aware of the vulnerability class but their multisig on Optimism
+            was permissionless, defeating the planned guard.
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>~$20M</strong> — the largest single
+            exploit on Optimism to date. ~$6.5M was rescued by a community
+            front-run that re-funded the empty pool.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Halborn:
+                <a
+                  href="https://www.halborn.com/blog/post/explained-the-sonne-finance-hack-may-2024"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.halborn.com/blog/post/explained-the-sonne-finance-hack-may-2024</a
+                >
+              </li>
+              <li>
+                QuillAudits:
+                <a
+                  href="https://www.quillaudits.com/blog/hack-analysis/sonne-finance-hack"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.quillaudits.com/blog/hack-analysis/sonne-finance-hack</a
+                >
+              </li>
+              <li>
+                CertiK:
+                <a
+                  href="https://www.certik.com/resources/blog/sonne-finance-incident-analysis"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.certik.com/resources/blog/sonne-finance-incident-analysis</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.8. Velocore V2 — June 2, 2024</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>integer underflow</strong> in the fee-adjusted withdrawal
+            math of a Balancer-style CPMM pool: when
+            <code>effectiveFee1e9 &gt; 1e18</code> (&gt;100%), the expression
+            <code>1e18 — ((1e18 — k) * effectiveFee1e9)</code>
+            underflows, flipping a withdrawal into an apparent large deposit.
+            Compounded by a missing access-control check on
+            <code>velocore__execute()</code>.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker called
+            <code>velocore__execute()</code> directly with simulated large
+            withdrawals to push <code>feeMultiplier</code> past 100%; once
+            <code>effectiveFee1e9</code> exceeded <code>1e18</code>, a
+            flash-loan-funded single-token withdrawal minted an outsized
+            LP-token balance via the underflow, letting the attacker drain the
+            pool and repay the loan.
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>~$6.8M</strong> in ETH on zkSync
+            Era and Linea.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Rekt:
+                <a
+                  href="https://rekt.news/velocore-rekt/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://rekt.news/velocore-rekt/</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.9. zkLend — February 2025</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>rounding-down / precision loss</strong> in the protocol's
+            safeMath library: integer division truncates instead of rounding,
+            letting the attacker manipulate <code>raw_balance</code> through
+            repeatedly crafted deposits and withdrawals.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker deposited and withdrew
+            wstETH in amounts engineered so that the share-burn calculation
+            produced fractional values like <code>1.5</code>, which truncated to
+            <code>1.0</code> — leaving the attacker's accounted balance higher
+            than it should be on every cycle. After several iterations the
+            inflated <code>raw_balance</code> was used to drain other pools.
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>~$9.5M</strong> (~2,930 ETH).
+            zkLend offered a 10% bounty for return; the attacker subsequently
+            lost most of the funds to a Tornado Cash phishing scam, and zkLend
+            wound the protocol down four months later.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                Halborn:
+                <a
+                  href="https://www.halborn.com/blog/post/explained-the-zklend-hack-february-2025"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.halborn.com/blog/post/explained-the-zklend-hack-february-2025</a
+                >
+              </li>
+              <li>
+                DL News:
+                <a
+                  href="https://www.dlnews.com/articles/defi/defi-protocol-zklend-shuts-down-four-months-after-9m-hack/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.dlnews.com/articles/defi/defi-protocol-zklend-shuts-down-four-months-after-9m-hack/</a
+                >
+              </li>
+              <li>
+                SlowMist:
+                <a
+                  href="https://slowmist.medium.com/in-depth-analysis-of-zklend-hack-linked-to-eralend-hack-fba4af9b66ef"
+                  target="_blank"
+                  rel="noopener"
+                  >https://slowmist.medium.com/in-depth-analysis-of-zklend-hack-linked-to-eralend-hack-fba4af9b66ef</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.10. 1inch Fusion v1 resolvers — March 5, 2025</h3>
+        <ul>
+          <li>
+            <strong>Defect type:</strong>
+            <strong>integer underflow</strong> on
+            <code>interactionLength</code> used as a step inside a broader
+            <strong>calldata-corruption</strong> exploit on deprecated Fusion v1
+            resolver contracts. The arithmetic underflow is the language-level
+            component; the primary defect class is buffer/calldata corruption.
+          </li>
+          <li>
+            <strong>What happened:</strong> the attacker discovered that setting
+            <code>interactionLength</code> to <code>-512</code> underflowed the
+            memory pointer used by the low-level
+            <code>_settleOrder</code> function to locate the order suffix (which
+            contains the resolver address). The corrupted suffix redirected
+            execution into resolver contracts that still used the deprecated
+            Fusion v1 implementation (1inch had marked it obsolete in 2023, but
+            resolver operators had not migrated).
+          </li>
+          <li>
+            <strong>Damage:</strong> <strong>~$5M</strong> total (≈2.4M USDC +
+            1,276 WETH). End-user funds were not affected — losses fell on
+            resolver operators; TrustedVolumes recovered most of its ~$4.5M
+            after negotiating with the attacker, who kept ~$450k as a 10%
+            bounty.
+          </li>
+          <li>
+            <strong>Sources:</strong>
+            <ul>
+              <li>
+                1inch official disclosure:
+                <a
+                  href="https://blog.1inch.com/vulnerability-discovered-in-resolver-contract/"
+                  target="_blank"
+                  rel="noopener"
+                  >https://blog.1inch.com/vulnerability-discovered-in-resolver-contract/</a
+                >
+              </li>
+              <li>
+                Halborn analysis:
+                <a
+                  href="https://www.halborn.com/blog/post/explained-the-1inch-hack-march-2025"
+                  target="_blank"
+                  rel="noopener"
+                  >https://www.halborn.com/blog/post/explained-the-1inch-hack-march-2025</a
+                >
+              </li>
+              <li>
+                Rekt:
+                <a
+                  href="https://rekt.news/1inch-rekt"
+                  target="_blank"
+                  rel="noopener"
+                  >https://rekt.news/1inch-rekt</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </article>
+
+      <article class="inc">
+        <h3>6.11. Systematics of blockchain cases</h3>
+        <div class="prose">
+          <p>
+            Solidity prior to 0.8.0 (December 2020)
+            <strong>did not perform overflow checks by default</strong>
+            — programmers had to use SafeMath manually. After 0.8.0 the language
+            reverts on overflow, but
+            <code>unchecked { ... }</code> blocks, forks of legacy code, and
+            division-heavy DeFi math (rounding / precision-loss bugs in
+            share-token, exchange-rate, and fee calculations) continue to
+            produce vulnerabilities of the same language-level arithmetic class.
+            A 2025 systematic review (Rezaei et al., "SoK: Root Cause of $1
+            Billion Loss in Smart Contract Real-World Attacks",
+            arXiv:2507.20175) catalogs arithmetic over/underflow and precision
+            loss among the 24 <em>active</em>
+            (still-exploitable) vulnerability classes in 50 major attacks
+            2022–2025. The paper does not break the $1.09B total down by class;
+            <strong
+              >for the named arithmetic-class incidents in its catalogue (cases
+              6.5–6.9 above), publicly reported losses sum to ~$46M</strong
+            >, a lower bound that excludes the pre-Solidity Bitcoin case (6.1),
+            the pre-0.8.0 Solidity cases (6.2–6.4), and the long tail of
+            unaudited contracts. Case 6.10 (1inch Fusion v1, ~$5M) sits adjacent
+            to this set: the arithmetic underflow there appeared as a step in a
+            wider buffer/calldata-corruption attack rather than as the primary
+            defect, so its loss is documented separately and not included in the
+            $46M arithmetic-primary sum.
+          </p>
+        </div>
+        <ul>
+          <li>
+            SoK paper (Rezaei et al., 2025):
+            <a
+              href="https://arxiv.org/abs/2507.20175"
+              target="_blank"
+              rel="noopener"
+              >https://arxiv.org/abs/2507.20175</a
+            >
+          </li>
+          <li>
+            SoK incident repository:
+            <a
+              href="https://github.com/HadisRe/SoK-Root-Cause-of-Smart-Contract-Incidents"
+              target="_blank"
+              rel="noopener"
+              >https://github.com/HadisRe/SoK-Root-Cause-of-Smart-Contract-Incidents</a
+            >
+          </li>
+        </ul>
+      </article>
+
+      <!-- 8. TONY HOARE QUOTE -->
+      <header class="sec-hd">
+        <h2>Famous Quote: Tony Hoare on null</h2>
+      </header>
+
+      <div class="prose">
+        <p>
+          In 2009, at the QCon conference, Sir Tony Hoare (creator of Quicksort,
+          1980 Turing Award laureate) publicly apologized for inventing the null
+          reference in ALGOL W in 1965:
+        </p>
+
+        <blockquote>
+          "I call it my billion-dollar mistake. It was the invention of the null
+          reference in 1965. (…) I couldn't resist the temptation to put in a
+          null reference, simply because it was so easy to implement. This has
+          led to innumerable errors, vulnerabilities, and system crashes, which
+          have probably caused a billion dollars of pain and damage in the last
+          forty years."
+        </blockquote>
+
+        <p>
+          Hoare himself acknowledged that "billion" is a lower bound: he
+          estimated the actual cumulative damage from NPE/NullPointerException
+          in Java, NullReferenceException in .NET, and segfaults in C/C++ over
+          60 years as "somewhere between $100 million and $10 billion." Modern
+          estimates are an order of magnitude larger.
+        </p>
+
+        <p>
+          <strong>Awsum eliminates null as a value of a reference type:</strong>
+          there is no "empty" state for a reference type — absence is
+          represented by an explicit constructor (<code>Maybe</code>,
+          <code>Either</code>). This closes the classical NPE / segfault.
+        </p>
+
+        <p>
+          It is worth being precise about what this does <em>not</em> cover in
+          other languages often grouped together for this property. Haskell
+          still has <code>undefined</code> / <code>error</code> inhabiting every
+          type; Rust has <code>panic!</code> / <code>.unwrap()</code>; Swift has
+          the <code>!</code> force-unwrap and implicitly-unwrapped optionals; F#
+          inherits <code>null</code> from .NET interop on every reference type
+          imported from the BCL or C#; Idris has <code>believe_me</code> and is
+          partial-by-default unless totality is explicitly enforced. Each of
+          these is the same class of bug Hoare was complaining about — "a value
+          the type admits, but the program crashes on" — under a different name.
+        </p>
+
+        <p>
+          Awsum has no language construct for a bottom value: no
+          <code>undefined</code>, no <code>error</code>, no <code>panic</code>,
+          no force-unwrap. Combined with mandatory exhaustiveness in
+          <code>case</code> (a missing constructor is a compile error, not a
+          runtime exception), this means "a value of type <code>T</code> that
+          crashes the program" does not exist — not just for null, but for the
+          wider family.
+        </p>
+
+        <ul>
+          <li>
+            InfoQ, "Null References: The Billion Dollar Mistake" (QCon 2009
+            video):
+            <a
+              href="https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/"
+              target="_blank"
+              rel="noopener"
+              >https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/</a
+            >
+          </li>
+          <li>
+            Wikipedia, Tony Hoare:
+            <a
+              href="https://en.wikipedia.org/wiki/Tony_Hoare"
+              target="_blank"
+              rel="noopener"
+              >https://en.wikipedia.org/wiki/Tony_Hoare</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- 9. AGGREGATE ESTIMATES -->
+      <header class="sec-hd">
+        <h2>Aggregate estimates of damage from software defects</h2>
+      </header>
+
+      <article class="inc">
+        <h3>9.1. NIST 2002 — estimate of $59.5 billion/year for the US</h3>
+        <div class="prose">
+          <p>
+            The NIST/RTI study "Planning Report 02-3: The Economic Impacts of
+            Inadequate Infrastructure for Software Testing" estimated the direct
+            annual damage to the US economy from software defects at
+            <strong>$59.5 billion (≈0.6% of GDP)</strong>. Of this:
+          </p>
+          <ul>
+            <li>
+              $1.8 billion — transportation manufacturing (CAD/CAM/CAE/PDM,
+              aerospace+automotive).
+            </li>
+            <li>$3.3 billion — financial services.</li>
+            <li>
+              About $22.5 billion of the $59.5 billion could have been
+              eliminated by improving testing infrastructure.
+            </li>
+          </ul>
+          <p>
+            Among the elements of the CISQ Automated Source Code Reliability
+            Measure (the structure of CWE categories that forms this number),
+            explicitly listed are:
+            <strong>null pointer dereference (CWE-476)</strong>,
+            <strong>division by zero (CWE-369)</strong>,
+            <strong>uncaught exception</strong>,
+            <strong>stack overflow</strong>, and related weaknesses.
+          </p>
+          <ul>
+            <li>
+              NIST Planning Report 02-3, "The Economic Impacts of Inadequate
+              Infrastructure for Software Testing" (PDF):
+              <a
+                href="https://www.nist.gov/system/files/documents/2021/03/24/econImpactSumm.v23.pdf"
+                target="_blank"
+                rel="noopener"
+                >https://www.nist.gov/system/files/documents/2021/03/24/econImpactSumm.v23.pdf</a
+              >
+            </li>
+            <li>
+              Computerworld, "Study: Buggy software costs users, vendors nearly
+              $60B annually":
+              <a
+                href="https://www.computerworld.com/article/1326875/study-buggy-software-costs-users-vendors-nearly-60b-annually.html"
+                target="_blank"
+                rel="noopener"
+                >https://www.computerworld.com/article/1326875/study-buggy-software-costs-users-vendors-nearly-60b-annually.html</a
+              >
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="inc">
+        <h3>9.2. CISQ 2022 — estimate of $2.41 trillion/year for the US</h3>
+        <div class="prose">
+          <p>
+            Twenty years after the NIST study, the CISQ consortium (co-founded
+            by OMG and SEI Carnegie Mellon) estimated the cost of poor software
+            quality in the US at
+            <strong>$2.41 trillion for 2022</strong>, of which:
+          </p>
+          <ul>
+            <li>
+              <strong>$1.56 trillion</strong> — operational failures (actual
+              downtime, incidents, damage from cyber-attacks via existing
+              vulnerabilities).
+            </li>
+            <li><strong>$260 billion</strong> — failed projects.</li>
+            <li>
+              <strong>$1.52 trillion</strong> — accumulated technical debt.
+            </li>
+          </ul>
+          <p>
+            That's a ~40× growth over two decades. CISQ explicitly lists
+            <strong
+              >buffer overflow, integer overflow, null pointer dereference,
+              division by zero</strong
+            >
+            among the weaknesses that form this number (CISQ Automated Source
+            Code Quality Measures).
+          </p>
+          <ul>
+            <li>
+              CISQ release:
+              <a
+                href="https://www.it-cisq.org/the-cost-of-poor-quality-software-in-the-us-a-2022-report/"
+                target="_blank"
+                rel="noopener"
+                >https://www.it-cisq.org/the-cost-of-poor-quality-software-in-the-us-a-2022-report/</a
+              >
+            </li>
+            <li>
+              Full report PDF:
+              <a
+                href="https://www.it-cisq.org/wp-content/uploads/sites/6/2022/11/CPSQ-Report-Nov-22-2.pdf"
+                target="_blank"
+                rel="noopener"
+                >https://www.it-cisq.org/wp-content/uploads/sites/6/2022/11/CPSQ-Report-Nov-22-2.pdf</a
+              >
+            </li>
+            <li>
+              Synopsys:
+              <a
+                href="https://news.synopsys.com/2022-12-06-Software-Quality-Issues-in-the-U-S-Cost-an-Estimated-2-41-Trillion-in-2022"
+                target="_blank"
+                rel="noopener"
+                >https://news.synopsys.com/2022-12-06-Software-Quality-Issues-in-the-U-S-Cost-an-Estimated-2-41-Trillion-in-2022</a
+              >
+            </li>
+            <li>
+              List of weaknesses (CISQ-CWE mapping):
+              <a
+                href="https://www.it-cisq.org/cisq-files/pdf/cisq-weaknesses-in-ascqm.pdf"
+                target="_blank"
+                rel="noopener"
+                >https://www.it-cisq.org/cisq-files/pdf/cisq-weaknesses-in-ascqm.pdf</a
+              >
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="inc">
+        <h3>9.3. CWE Top 25 — where our defects sit in the real CVE dataset</h3>
+        <div class="prose">
+          <p>
+            CWE Top 25 Most Dangerous Software Weaknesses (MITRE) ranks
+            weaknesses by real CVE frequency and severity.
+          </p>
+          <p>In the <strong>2024</strong> edition:</p>
+          <ul>
+            <li>
+              <strong>CWE-476 (NULL Pointer Dereference)</strong> — #11. 1,625
+              CVEs, average CVSS 5.8. Score 15.34.
+            </li>
+            <li>
+              <strong>CWE-190 (Integer Overflow or Wraparound)</strong> — #23.
+              Score around 7.x by various estimates.
+            </li>
+          </ul>
+          <p>
+            In the <strong>2025</strong> edition MITRE's methodology changed
+            (decomposing abstract classes into specific children) — positions
+            reshuffled, but the classes remained near the top:
+          </p>
+          <ul>
+            <li><strong>CWE-476</strong> rose to #13.</li>
+            <li>
+              <strong>CWE-190</strong> dropped to #30 (formally outside the Top
+              25, but specific buffer-overflow variants CWE-120/121/122 climbed
+              in, which are often consequences of integer overflow).
+            </li>
+          </ul>
+          <ul>
+            <li>
+              CWE Top 25 (2024):
+              <a
+                href="https://cwe.mitre.org/top25/archive/2024/2024_cwe_top25.html"
+                target="_blank"
+                rel="noopener"
+                >https://cwe.mitre.org/top25/archive/2024/2024_cwe_top25.html</a
+              >
+            </li>
+            <li>
+              CWE Top 25 (2025):
+              <a
+                href="https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html"
+                target="_blank"
+                rel="noopener"
+                >https://cwe.mitre.org/top25/archive/2025/2025_cwe_top25.html</a
+              >
+            </li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 10. SUMMARY TABLE -->
+      <header class="sec-hd">
+        <h2>Summary table</h2>
+      </header>
+
+      <div class="table-wrap">
+        <table class="summary">
+          <thead>
+            <tr>
+              <th>Incident</th>
+              <th>Year</th>
+              <th>Defect class</th>
+              <th>Casualties</th>
+              <th>Direct damage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Therac-25</td>
+              <td>1985–87</td>
+              <td>byte overflow + race</td>
+              <td>≥3 dead, ≥3 severely injured</td>
+              <td>lawsuits, FDA Class I recall</td>
+            </tr>
+            <tr>
+              <td>Vancouver Stock Exchange</td>
+              <td>1982–83</td>
+              <td>precision loss (truncation)</td>
+              <td>0</td>
+              <td>years of distorted index</td>
+            </tr>
+            <tr>
+              <td>AT&amp;T network collapse (mentioned indirectly)</td>
+              <td>1990</td>
+              <td>C <code>break</code> mishandling, not arithmetic</td>
+              <td>0</td>
+              <td>~$60 million, 70 million failed calls</td>
+            </tr>
+            <tr>
+              <td>Patriot Dhahran</td>
+              <td>1991</td>
+              <td>fixed-point precision</td>
+              <td><strong>28</strong> dead, ~100 injured</td>
+              <td>strategic failure</td>
+            </tr>
+            <tr>
+              <td>Ariane 5 Flight 501</td>
+              <td>1996</td>
+              <td>int16 overflow</td>
+              <td>0</td>
+              <td>$370–500 million + 4 Cluster satellites</td>
+            </tr>
+            <tr>
+              <td>Bitcoin Value Overflow</td>
+              <td>2010</td>
+              <td>int64 overflow in tx output sum</td>
+              <td>0</td>
+              <td>~9 hours of chain rolled back, no $ loss</td>
+            </tr>
+            <tr>
+              <td>Boeing 787 GCU</td>
+              <td>2015</td>
+              <td>int32 counter overflow</td>
+              <td>0 (caught in lab)</td>
+              <td>potentially — loss of AC power in flight</td>
+            </tr>
+            <tr>
+              <td>BEC BatchOverflow</td>
+              <td>2018</td>
+              <td>int overflow in multiplication</td>
+              <td>0</td>
+              <td>ERC-20 trading suspensions on major exchanges</td>
+            </tr>
+            <tr>
+              <td>SMT proxyOverflow</td>
+              <td>2018</td>
+              <td>int overflow in addition</td>
+              <td>0</td>
+              <td>trading suspensions</td>
+            </tr>
+            <tr>
+              <td>Poolz Finance</td>
+              <td>2023</td>
+              <td>int overflow</td>
+              <td>0</td>
+              <td>~$390k</td>
+            </tr>
+            <tr>
+              <td>Raft Protocol</td>
+              <td>2023</td>
+              <td>precision loss in share-token mint</td>
+              <td>0</td>
+              <td>~$3.3M proceeds (~$6.7M unbacked R minted)</td>
+            </tr>
+            <tr>
+              <td>Abracadabra Money (Cauldron V4)</td>
+              <td>2024</td>
+              <td>precision loss in borrow/repay</td>
+              <td>0</td>
+              <td>~$6.5M, MIM stablecoin depeg</td>
+            </tr>
+            <tr>
+              <td>Sonne Finance</td>
+              <td>2024</td>
+              <td>precision loss / rounding</td>
+              <td>0</td>
+              <td>~$20M (~$6.5M rescued)</td>
+            </tr>
+            <tr>
+              <td>Velocore V2</td>
+              <td>2024</td>
+              <td>underflow in fee math</td>
+              <td>0</td>
+              <td>~$6.8M</td>
+            </tr>
+            <tr>
+              <td>zkLend</td>
+              <td>2025</td>
+              <td>precision loss / rounding</td>
+              <td>0</td>
+              <td>~$9.5M, protocol shut down</td>
+            </tr>
+            <tr>
+              <td>1inch Fusion v1 resolvers</td>
+              <td>2025</td>
+              <td>underflow as step in calldata corruption</td>
+              <td>0</td>
+              <td>~$5M (resolver operators)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 11. THE CASE FOR AWSUM -->
+      <header class="sec-hd">
+        <h2>The case for Awsum</h2>
+      </header>
+
+      <div class="prose">
+        <p>
+          The incidents above demonstrate that
+          <strong
+            >runtime defects in numerical and reference arithmetic continue to
+            kill people and burn billions of dollars 60+ years after these
+            defect classes were first identified.</strong
+          >
+          The standard "industry" answer is external tooling: SafeMath in
+          Solidity, MISRA-C for embedded systems, static analyzers, formal
+          verification. All of these tools are
+          <strong>external to the language</strong>. They are optional, require
+          discipline, and every missed SafeMath call is a potential
+          BatchOverflow.
+        </p>
+
+        <p>Awsum closes this gap through:</p>
+
+        <ol class="case">
+          <li>
+            <strong>No null as a valid value of a reference type</strong> —
+            Hoare's mistake closed at the type-system level. Optional values
+            must be <code>Maybe</code>; the compiler refuses to compile code
+            that doesn't handle the absence case, and exhaustiveness is checked
+            without a catch-all <code>_</code> escape. <code>null</code>,
+            <code>nil</code>, <code>undefined</code>, and <code>NaN</code> are
+            not values of any type in the language.
+          </li>
+          <li>
+            <strong>Honest integer arithmetic via <code>Either</code></strong>
+            — closing the Ariane 5 / Boeing 787 / Patriot / Vancouver /
+            Therac-25 / BatchOverflow class. Every integer operation that can
+            leave its range — overflow, underflow, precision loss, division by
+            zero — returns <code>Either</code> with a typed error variant. The
+            programmer must handle the error case explicitly; ignoring it is a
+            compile error. No silent wrap, no <code>Infinity</code>, no
+            <code>-0</code>. The same byte-identical behaviour on JVM, CLR,
+            JavaScript, WebAssembly, and LLVM regardless of the host platform's
+            native integer semantics.
+          </li>
+          <li>
+            <strong>Stack-safe recursion of any shape</strong> — closing the
+            unbounded-recursion class. Self, mutual, and non-tail recursion
+            compile to a bounded-stack loop on every backend, including JVM and
+            JS where the host platform has no native cross-method tail calls. No
+            <code>tailRecM</code>, no manual trampolines, no "stack-safe in our
+            test suite, blows up in production on the JVM."
+          </li>
+          <li>
+            <strong>Platform effects gated at compile time</strong> — closing
+            the runtime-surprise class. Each effect is bound to the
+            program-types it can run under; using a browser-only effect in a CLI
+            program (or vice versa) is a compile error, not a 3 AM page.
+          </li>
+          <li>
+            <strong>No silent decisions</strong> — closing the broader "I
+            thought this value had a different type" / "I thought I was
+            modifying the outer x" class. No defaulting of integer literals (the
+            compiler never picks a type for the user), no implicit numeric
+            coercion, no shadowing of any visible name by an inner binder.
+            Closed sum types make every "what can this value be?" answerable
+            from the type signature alone.
+          </li>
+        </ol>
+
+        <p>
+          Each of these guarantees
+          <strong>moves the defect from runtime to compile-time</strong> — for
+          every line of application code, on every supported backend.
+        </p>
+      </div>
+
+      <!-- GENERAL OVERVIEW SOURCES -->
+      <header class="sec-hd">
+        <h2>General overview sources</h2>
+      </header>
+
+      <div class="prose">
+        <ul>
+          <li>
+            Tom Cargill / Donald MacKenzie / Nancy Leveson — academic works on
+            software safety (Therac, Ariane, Patriot are discussed in each).
+          </li>
+          <li>
+            rflynn/bugs — open compilation of incidents:
+            <a
+              href="https://github.com/rflynn/bugs"
+              target="_blank"
+              rel="noopener"
+              >https://github.com/rflynn/bugs</a
+            >
+          </li>
+          <li>
+            IBM/CSO Online, "8 Famous Software Bugs in Space":
+            <a
+              href="https://www.csoonline.com/article/567417/8-famous-software-bugs-in-space.html"
+              target="_blank"
+              rel="noopener"
+              >https://www.csoonline.com/article/567417/8-famous-software-bugs-in-space.html</a
+            >
+          </li>
+          <li>
+            Computerworld, "Epic failures: 11 infamous software bugs":
+            <a
+              href="https://www.computerworld.com/article/2515483/epic-failures-11-infamous-software-bugs.html"
+              target="_blank"
+              rel="noopener"
+              >https://www.computerworld.com/article/2515483/epic-failures-11-infamous-software-bugs.html</a
+            >
+          </li>
+          <li>
+            Tech World With Milan, Ariane 5 analysis in the context of Boeing
+            737 MAX:
+            <a
+              href="https://newsletter.techworld-with-milan.com/p/how-a-single-line-of-code-brought"
+              target="_blank"
+              rel="noopener"
+              >https://newsletter.techworld-with-milan.com/p/how-a-single-line-of-code-brought</a
+            >
+          </li>
+          <li>
+            ACM Risks Forum (Peter Neumann) — primary source for many of the
+            cases above.
+          </li>
+        </ul>
+      </div>
+
+      <p class="footnote">Document last reviewed on April 30, 2026.</p>
+    </div>
+  </body>
+</html>
