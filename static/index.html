@@ -245,6 +245,29 @@
         margin: 0;
       }
 
+      /* WHY AWSUM */
+      .why h3 {
+        font-family: var(--font-display);
+        font-size: clamp(22px, 2.6vw, 28px);
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+        margin: 32px 0 12px;
+      }
+      .why h3:first-of-type {
+        margin-top: 4px;
+      }
+      .why p,
+      .why ul {
+        max-width: 860px;
+      }
+      .why ul {
+        padding-left: 22px;
+        margin: 0 0 1em;
+      }
+      .why ul li {
+        margin-bottom: 8px;
+      }
+
       /* SPONSOR CTA + EMPTY BACKERS */
       .cta-sponsor {
         display: inline-block;
@@ -311,13 +334,96 @@
         </p>
       </section>
 
+      <!-- WHY AWSUM -->
+      <header class="sec-hd">
+        <h2>Why Awsum?</h2>
+      </header>
+
+      <section class="why">
+        <h3>
+          The problem: languages implement the wrong choices — people die,
+          billions burn
+        </h3>
+        <ul>
+          <li>
+            <strong>28 dead, ~100 wounded</strong> — Patriot battery, Dhahran
+            1991: fixed-point precision drift on a continuously-running clock
+            missed an incoming Scud.
+          </li>
+          <li>
+            <strong>≥3 dead, 3+ severely injured</strong> — Therac-25, 1985–87:
+            a 1-byte counter overflowed and disabled the safety interlock.
+          </li>
+          <li>
+            <strong>All four generators offline mid-flight</strong> — Boeing
+            787, 2015 (FAA AD 2015-09-07): an <code>int32</code> counter ticking
+            every 10 ms overflows at 248 days and drops every GCU into failsafe.
+            Caught in the lab; FAA mandated power-cycles every 120 days until a
+            patch shipped.
+          </li>
+          <li>
+            <strong>$370–500 million + 4 satellites</strong> — Ariane 5, Flight
+            501, 1996: <code>int16</code> overflow on a 64-bit-to-16-bit
+            conversion.
+          </li>
+          <li>
+            <strong>184 billion BTC almost minted</strong> — Bitcoin Value
+            Overflow Incident, 2010 (CVE-2010-5139): integer overflow let one
+            transaction credit two outputs of ~92 billion BTC each, breaking the
+            21M supply cap. The network forked, the blockchain was rolled back
+            53 blocks.
+          </li>
+          <li>
+            <strong>$2.41 trillion / year, US alone</strong> — CISQ 2022
+            estimate of poor software quality, with null pointer dereference,
+            integer overflow, division by zero, and buffer overflow named as
+            load-bearing categories.
+          </li>
+        </ul>
+        <p>
+          Details:
+          <a href="/catastrophes-caused-by-programming-language-defects"
+            >Catastrophes Caused by Programming Language Defects</a
+          >.
+        </p>
+
+        <h3>How these problems are solved in other languages</h3>
+        <p>
+          Short answer: almost nobody is going to solve them (proofs coming
+          soon).
+        </p>
+
+        <h3>How Awsum solves it</h3>
+        <ul>
+          <li>
+            No null reference as a valid value — <code>Maybe</code> with
+            exhaustiveness enforced by the compiler.
+          </li>
+          <li>
+            Honest integer arithmetic via <code>Either</code> — overflow,
+            underflow, precision loss, and division by zero are typed errors,
+            handled exhaustively at the call site.
+          </li>
+          <li>
+            Stack-safe recursion of any shape — self, mutual, or non-tail
+            compiles to a bounded loop on every backend, including JVM and JS
+            where the host has no native cross-method tail calls.
+          </li>
+          <li>
+            Platform effects gated at compile time — a browser-only effect in a
+            CLI program (or vice versa) is a compile error, not a runtime
+            surprise.
+          </li>
+        </ul>
+      </section>
+
       <!-- BACKED BY -->
       <header class="sec-hd">
         <h2>Backed by</h2>
         <p class="dek">
-          Awsum is open source, run on personal time and paid for out of
-          pocket. Sponsorship turns it into something durable — faster
-          releases, faster issue turnaround, lower risk of stalling.
+          Awsum is open source, run on personal time and paid for out of pocket.
+          Sponsorship turns it into something durable — faster releases, faster
+          issue turnaround, lower risk of stalling.
         </p>
       </header>
 
