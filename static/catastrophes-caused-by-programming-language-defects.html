@@ -1809,9 +1809,9 @@
             zero — returns <code>Either</code> with a typed error variant. The
             programmer must handle the error case explicitly; ignoring it is a
             compile error. No silent wrap, no <code>Infinity</code>, no
-            <code>-0</code>. The same byte-identical behaviour on JVM, CLR,
-            JavaScript, WebAssembly, and LLVM regardless of the host platform's
-            native integer semantics.
+            <code>-0</code>. Identical behaviour on JVM, CLR, JavaScript,
+            WebAssembly, and LLVM regardless of the host platform's native
+            integer semantics.
           </li>
           <li>
             <strong>Stack-safe recursion of any shape</strong> — closing the
