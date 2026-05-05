@@ -542,7 +542,7 @@ Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code><
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 brew install llvm@15
 
-<span class="tok-cm"># JVM target — Java 7+</span>
+<span class="tok-cm"># JVM target — Java 11+</span>
 brew install openjdk
 
 <span class="tok-cm"># CLR target — .NET 9+</span>
@@ -559,7 +559,7 @@ brew install node</code></pre>
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 sudo apt-get install -y clang-15
 
-<span class="tok-cm"># JVM target — Java 7+</span>
+<span class="tok-cm"># JVM target — Java 11+</span>
 sudo apt-get install -y default-jre
 
 <span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
@@ -578,7 +578,7 @@ sudo apt-get install -y nodejs</code></pre>
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 sudo apt-get install -y clang-15
 
-<span class="tok-cm"># JVM target — Java 7+</span>
+<span class="tok-cm"># JVM target — Java 11+</span>
 sudo apt-get install -y default-jre
 
 <span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
@@ -600,7 +600,7 @@ $Url  = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/L
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\llvm-installer.exe"
 Start-Process -Wait "$env:TEMP\llvm-installer.exe" -ArgumentList "/S"
 
-<span class="tok-cm"># JVM target — Java 7+</span>
+<span class="tok-cm"># JVM target — Java 11+</span>
 winget install EclipseAdoptium.Temurin.21.JDK
 
 <span class="tok-cm"># CLR target — .NET 9+</span>
@@ -687,8 +687,8 @@ clang out.ll -o program && ./program "world"
 
 <span class="tok-cm"># Compile to JVM bytecode</span>
 awsum build --program-type cli -t jvm  -o AwsumMain.class src/Main.aww
-<span class="tok-cm"># Run with java</span>
-java AwsumMain "world"
+<span class="tok-cm"># Run with java (the -D flags pin I/O charsets to UTF-8 so non-ASCII argv survives the JVM startup decode on hosts whose default isn't UTF-8 — Windows in particular)</span>
+java -Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8 AwsumMain "world"
 
 <span class="tok-cm"># Compile to CLR assembly</span>
 awsum build --program-type cli -t clr  -o AwsumMain.dll   src/Main.aww
