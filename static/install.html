@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Docs — Awsum</title>
+    <title>Install — Awsum</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Use the awsum CLI: build, run, check, format. Cross-target compiler — Native (LLVM), JVM, CLR, WASM, JS. Design documents and the bundled prelude."
+      content="Install the Awsum compiler and target runtimes (Native (LLVM) / JVM / CLR / WASM / JS) on macOS, Linux, or Windows. Editor extensions for Visual Studio Code and Zed."
     />
     <link
       rel="icon"
@@ -391,8 +391,8 @@
     <div class="wrap">
       <header class="site">
         <nav>
-          <a href="/install" class="nav-link">Install</a>
-          <a href="/docs" class="nav-link active">Docs</a>
+          <a href="/install" class="nav-link active">Install</a>
+          <a href="/docs" class="nav-link">Docs</a>
           <a href="/sponsors" class="nav-link">Sponsors</a>
           <a
             href="https://github.com/awsum-lang/awsum"
@@ -407,236 +407,314 @@
 
       <!-- HERO -->
       <section class="hero hero-page">
-        <h1>Documentation</h1>
+        <h1>Install</h1>
         <p class="lead">
-          Use the <code>awsum</code> CLI, plus the design documents that
-          describe the language and its compiler.
+          Get the <code>awsum</code> compiler, target runtimes, and editor
+          tooling running on your machine.
         </p>
       </section>
 
-      <!--  USE -->
+      <!--  INSTALL -->
       <header class="sec-hd">
-        <h2>Use</h2>
-      </header>
-
-      <div class="cli">
-        <section class="cmd">
-          <h4>awsum build</h4>
-          <p>
-            Compile your program for a target picked with <code>-t</code>. With
-            <code>-o OUT</code> the result goes to a file; omit it for stdout.
-          </p>
-          <pre><code><span class="tok-cm"># Compile to LLVM IR</span>
-awsum build --program-type cli -t llvm -o out.ll          src/Main.aww
-<span class="tok-cm"># Assemble to native binary with clang, then run</span>
-clang out.ll -o program && ./program "world"
-
-<span class="tok-cm"># Compile to JVM bytecode</span>
-awsum build --program-type cli -t jvm  -o AwsumMain.class src/Main.aww
-<span class="tok-cm"># Run with java (the -D flags pin I/O charsets to UTF-8 so non-ASCII argv survives the JVM startup decode on hosts whose default isn't UTF-8 — Windows in particular)</span>
-java -Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8 AwsumMain "world"
-
-<span class="tok-cm"># Compile to CLR assembly</span>
-awsum build --program-type cli -t clr  -o AwsumMain.dll   src/Main.aww
-<span class="tok-cm"># Run with dotnet</span>
-dotnet AwsumMain.dll "world"
-
-<span class="tok-cm"># Compile to WebAssembly module</span>
-awsum build --program-type cli -t wasm -o out.wasm        src/Main.aww
-<span class="tok-cm"># Run with wasmtime</span>
-wasmtime out.wasm "world"
-
-<span class="tok-cm"># Compile to JavaScript</span>
-awsum build --program-type cli -t js   -o out.js          src/Main.aww
-<span class="tok-cm"># Run with Node.js</span>
-node out.js "world"</code></pre>
-        </section>
-
-        <section class="cmd">
-          <h4>awsum run</h4>
-          <p>
-            Compile to a temporary location and execute with the matching system
-            runtime in one step — useful for trying things out without leaving
-            build artifacts on disk. Pick the target with
-            <code>-t</code>. Input passed via <code>--input</code> or
-            <code>--stdin</code> reaches <code>main</code> directly.
-          </p>
-          <pre><code><span class="tok-cm"># Run with inline input</span>
-awsum run --program-type cli -t llvm --input "world" src/Main.aww
-
-<span class="tok-cm"># Run with stdin</span>
-echo "world" | awsum run --program-type cli -t llvm --stdin src/Main.aww</code></pre>
-        </section>
-
-        <section class="cmd">
-          <h4>awsum check</h4>
-          <p>
-            Check the program for errors and warnings, without producing any
-            artifact. The fast feedback loop during development.
-          </p>
-          <pre><code><span class="tok-cm"># Human-readable terminal output</span>
-awsum check --program-type cli src/Main.aww
-
-<span class="tok-cm"># JSON output for editor integrations</span>
-awsum check --program-type cli --json src/Main.aww
-
-<span class="tok-cm"># Strict mode — escalate warnings to non-zero exit code (for CI)</span>
-awsum check --program-type cli --strict src/Main.aww</code></pre>
-        </section>
-
-        <section class="cmd">
-          <h4>awsum format</h4>
-          <p>
-            Format the source file. The implementation is "parse, then render".
-          </p>
-          <pre><code><span class="tok-cm"># Format and rewrite the file in place</span>
-awsum format -i src/Main.aww
-
-<span class="tok-cm"># Print formatted source to stdout</span>
-awsum format src/Main.aww</code></pre>
-        </section>
-      </div>
-      <p class="cli-more">
-        Additional inspection commands — <code>ast</code>, <code>core</code>,
-        <code>asm</code>, <code>symbols</code> — see <code>awsum --help</code>.
-      </p>
-
-      <!--  FURTHER READING -->
-      <header class="sec-hd">
-        <h2>Further reading</h2>
+        <h2 id="install">Install</h2>
         <p class="dek">
-          Design documents and the bundled prelude. They live in the compiler
-          repo on GitHub — single source of truth, kept in lockstep with the
-          released compiler.
+          Prebuilt binaries from
+          <a
+            href="https://github.com/awsum-lang/awsum/releases"
+            target="_blank"
+            rel="noopener"
+            >GitHub Releases</a
+          >
         </p>
       </header>
 
-      <h3 class="sub-h3">Design documents</h3>
+      <div class="install-tabs" data-group="compiler" role="tablist">
+        <button data-os="macos" type="button">macOS (Apple Silicon)</button>
+        <button data-os="linux-x86_64" type="button">Linux (x86_64)</button>
+        <button data-os="linux-arm64" type="button">Linux (aarch64)</button>
+        <button data-os="windows" type="button">Windows (x86_64)</button>
+      </div>
+
+      <div class="install-panel" data-group="compiler" data-os="macos">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-macos-aarch64.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <div class="install-panel" data-group="compiler" data-os="linux-x86_64">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-x86_64-gnu.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <div class="install-panel" data-group="compiler" data-os="linux-arm64">
+        <ol>
+          <li>
+            <p>
+              Download into <code>~/.local/bin</code> (overwrites any existing
+              copy):
+            </p>
+            <pre><code>mkdir -p ~/.local/bin
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-linux-aarch64-gnu.tar.gz \
+  | tar -xzC ~/.local/bin</code></pre>
+          </li>
+          <li>
+            <p>
+              Verify install — <code>~/.local/bin</code> must be on your
+              <code>PATH</code>:
+            </p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <div class="install-panel" data-group="compiler" data-os="windows">
+        <ol>
+          <li>
+            <p>
+              Download into <code>%LOCALAPPDATA%\Microsoft\WindowsApps</code> —
+              already on <code>PATH</code> by default since Windows 10
+              (overwrites any existing copy):
+            </p>
+            <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.3/awsum-0.0.3-windows-x86_64.zip"
+$Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
+Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
+Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code></pre>
+          </li>
+          <li>
+            <p>Verify install:</p>
+            <pre><code>awsum --version</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <p class="install-other">
+        For other platforms (musl Linux, x86 macOS, BSD), build from source —
+        see
+        <a
+          href="https://github.com/awsum-lang/awsum#installation"
+          target="_blank"
+          rel="noopener"
+          >awsum/README.md</a
+        >.
+      </p>
+
+      <h3 class="sub-h3">Target runtimes</h3>
+      <p style="font-size: 15.5px; color: var(--ink-2); margin-bottom: 14px">
+        Install only the runtimes for the targets you actually plan to use.
+      </p>
+
+      <div class="install-runtimes">
+        <div class="install-tabs" data-group="runtime" role="tablist">
+          <button data-os="macos" type="button">macOS (Apple Silicon)</button>
+          <button data-os="linux-x86_64" type="button">Linux (x86_64)</button>
+          <button data-os="linux-arm64" type="button">Linux (aarch64)</button>
+          <button data-os="windows" type="button">Windows (x86_64)</button>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="macos">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+brew install llvm@15
+
+<span class="tok-cm"># JVM target — Java 11+</span>
+brew install openjdk
+
+<span class="tok-cm"># CLR target — .NET 9+</span>
+brew install dotnet
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+brew install wasmtime
+
+<span class="tok-cm"># JS target — Node 22+</span>
+brew install node</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="linux-x86_64">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+sudo apt-get install -y clang-15
+
+<span class="tok-cm"># JVM target — Java 11+</span>
+sudo apt-get install -y default-jre
+
+<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># Microsoft's APT repo first)</span>
+sudo apt-get install -y dotnet-sdk-9.0
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="linux-arm64">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
+sudo apt-get install -y clang-15
+
+<span class="tok-cm"># JVM target — Java 11+</span>
+sudo apt-get install -y default-jre
+
+<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># Microsoft's APT repo first)</span>
+sudo apt-get install -y dotnet-sdk-9.0
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+curl https://wasmtime.dev/install.sh -sSf | bash
+
+<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs</code></pre>
+        </div>
+
+        <div class="install-panel" data-group="runtime" data-os="windows">
+          <pre><code><span class="tok-cm"># LLVM target — clang 15.0.7 (opaque pointers; 16+ has known issues</span>
+<span class="tok-cm"># with our codegen on Windows runners)</span>
+$Url  = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/LLVM-15.0.7-win64.exe"
+Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\llvm-installer.exe"
+Start-Process -Wait "$env:TEMP\llvm-installer.exe" -ArgumentList "/S"
+
+<span class="tok-cm"># JVM target — Java 11+</span>
+winget install EclipseAdoptium.Temurin.21.JDK
+
+<span class="tok-cm"># CLR target — .NET 9+</span>
+winget install Microsoft.DotNet.SDK.9
+
+<span class="tok-cm"># WASM target — wasmtime with WASI</span>
+winget install BytecodeAlliance.Wasmtime
+
+<span class="tok-cm"># JS target — Node 22+</span>
+winget install OpenJS.NodeJS</code></pre>
+        </div>
+      </div>
+
+      <h3 class="sub-h3">Editor Support</h3>
+
+      <h4 class="editor-h4">Visual Studio Code</h4>
       <ul>
         <li>
           <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/principles.md"
+            href="https://marketplace.visualstudio.com/items?itemName=awsum-lang.awsum-vscode"
             target="_blank"
             rel="noopener"
-            >principles.md</a
+            >Visual Studio Marketplace</a
           >
-          — what the language guarantees and how the compiler resolves
-          trade-offs.
         </li>
         <li>
           <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/type-system.md"
+            href="https://open-vsx.org/extension/awsum-lang/awsum-vscode"
             target="_blank"
             rel="noopener"
-            >type-system.md</a
+            >Open VSX Registry</a
           >
-          — user-facing type-system reference with examples that compile and
-          examples that get rejected.
         </li>
         <li>
           <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/pipeline.md"
+            href="https://github.com/awsum-lang/awsum-vscode/releases"
             target="_blank"
             rel="noopener"
-            >pipeline.md</a
+            >Manual install (.vsix from GitHub Releases)</a
           >
-          — phase-by-phase walkthrough of <code>awsum build</code>: parse →
-          typecheck → lower → Core-to-Core → backend.
         </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/recursion.md"
-            target="_blank"
-            rel="noopener"
-            >recursion.md</a
-          >
-          — Scc → Cps → Tco passes that turn any recursion shape into a
-          stack-safe loop on every backend, with no user annotation.
-        </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/prelude.md"
-            target="_blank"
-            rel="noopener"
-            >prelude.md</a
-          >
-          — how <code>stdlib/Prelude.aww</code> coexists with per-target
-          compiler implementations via <code>BuiltIn.foo</code>.
-        </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/targets.md"
-            target="_blank"
-            rel="noopener"
-            >targets.md</a
-          >
-          — per-backend implementation details (LLVM IR, JVM bytecode, CIL,
-          WAT, JS).
-        </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md"
-            target="_blank"
-            rel="noopener"
-            >platform-version-policy.md</a
-          >
-          — minimum-version rule per backend (latest LTS for server / browser;
-          oldest manufacturer-supported for mobile).
-        </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/compatibility.md"
-            target="_blank"
-            rel="noopener"
-            >compatibility.md</a
-          >
-          — supported targets and host-OS / architecture matrix exercised in
-          CI.
-        </li>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/testing.md"
-            target="_blank"
-            rel="noopener"
-            >testing.md</a
-          >
-          — snapshot vs property-test layers and the post-feature workflow.
-        </li>
+      </ul>
+      <p>
+        Syntax highlighting, formatting, inline diagnostics, quick fixes,
+        outline, breadcrumbs, workspace symbols.
+      </p>
+
+      <h4 class="editor-h4 editor-other">Other editors</h4>
+      <ul>
         <li>
           <a
             href="https://github.com/awsum-lang/awsum/blob/main/docs/spec/grammar.ebnf"
             target="_blank"
             rel="noopener"
-            >grammar.ebnf</a
+            >EBNF grammar</a
           >
-          — formal surface grammar.
         </li>
         <li>
           <a
-            href="https://github.com/awsum-lang/awsum/blob/main/docs/roadmap.md"
+            href="https://github.com/awsum-lang/awsum/blob/main/editors/textmate/awsum.tmLanguage.json"
             target="_blank"
             rel="noopener"
-            >roadmap.md</a
+            >TextMate grammar</a
           >
-          — short, public-facing roadmap.
         </li>
       </ul>
 
-      <h3 class="sub-h3">Bundled prelude</h3>
-      <ul>
-        <li>
-          <a
-            href="https://github.com/awsum-lang/awsum/blob/main/stdlib/Prelude.aww"
-            target="_blank"
-            rel="noopener"
-            >stdlib/Prelude.aww</a
-          >
-          — every program gets <code>Maybe</code>, <code>Either</code>,
-          <code>Bool</code>, <code>bindEither</code>, <code>showInt32</code>,
-          and friends without an import. Read it to know what's available
-          out-of-the-box.
-        </li>
-      </ul>
+      <p class="cli-more">
+        With <code>awsum</code> on your <code>PATH</code>, head to the
+        <a href="/docs">docs</a> for usage.
+      </p>
+
+      <script>
+        (function () {
+          var ua = navigator.userAgent || "";
+          var defaultOs = "macos";
+          if (/Win/i.test(ua)) defaultOs = "windows";
+          else if (/Linux/i.test(ua)) {
+            defaultOs = /aarch64|arm64/i.test(ua)
+              ? "linux-arm64"
+              : "linux-x86_64";
+          }
+
+          function setupGroup(group) {
+            var tabs = document.querySelectorAll(
+              '.install-tabs[data-group="' + group + '"] button',
+            );
+            var panels = document.querySelectorAll(
+              '.install-panel[data-group="' + group + '"]',
+            );
+            function activate(os) {
+              tabs.forEach(function (t) {
+                t.classList.toggle("active", t.dataset.os === os);
+              });
+              panels.forEach(function (p) {
+                p.classList.toggle("active", p.dataset.os === os);
+              });
+            }
+            tabs.forEach(function (t) {
+              t.addEventListener("click", function () {
+                activate(t.dataset.os);
+              });
+            });
+            activate(defaultOs);
+          }
+
+          setupGroup("compiler");
+          setupGroup("runtime");
+        })();
+      </script>
     </div>
   </body>
 </html>
