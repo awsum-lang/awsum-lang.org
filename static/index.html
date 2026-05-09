@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Awsum is a functional language that compiles natively to JVM, CLR, JavaScript, WebAssembly, or LLVM. Honest arithmetic, stack-safe recursion of any shape, compile-time platform effects, no defaulting, no shadowing, minimal dependency surface."
+      content="Awsum is a functional language that compiles natively to Native (LLVM), JVM, CLR, WASM, or JS. Honest arithmetic, stack-safe recursion of any shape, compile-time platform effects, no defaulting, no shadowing, minimal dependency surface."
     />
     <link
       rel="icon"
@@ -299,6 +299,7 @@
     <div class="wrap">
       <header class="site">
         <nav>
+          <a href="/install" class="nav-link">Install</a>
           <a href="/docs" class="nav-link">Docs</a>
           <a href="/sponsors" class="nav-link">Sponsors</a>
           <a
@@ -326,8 +327,8 @@
           syntactic convenience.
         </p>
         <p class="sub">
-          <b>Cross-target:</b> The same source compiles to JVM, CLR, JavaScript,
-          WebAssembly, or LLVM, and produces the same result on every one —
+          <b>Cross-target:</b> The same source compiles to Native (LLVM), JVM,
+          CLR, WASM, or JS, and produces the same result on every one —
           independent of each target's quirks and built-in types. The compiler
           accepts only the effects supported by the chosen target and program
           type.
@@ -337,9 +338,12 @@
       <section class="why">
         <h3>Compatibility</h3>
         <ul>
-          <li><strong>Targets:</strong> LLVM, JVM, CLR, WASM, JS</li>
+          <li><strong>Targets:</strong> Native (LLVM), JVM, CLR, WASM, JS</li>
           <li><strong>OS:</strong> Mac, Linux (aarch64, x86_64), Windows</li>
-          <li><strong>Editors:</strong> VSCode + Open VSX</li>
+          <li>
+            <strong>Editors:</strong> VSCode (+ Open VSX), Zed, LSP server,
+            formatter
+          </li>
           <li><strong>Program types:</strong> CLI</li>
         </ul>
       </section>

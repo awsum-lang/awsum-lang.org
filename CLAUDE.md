@@ -6,11 +6,20 @@ Static website for the Awsum programming language hosted on GitHub Pages at http
 
 ```
 static/
-├── index.html    # Main landing page (inline CSS, no JS)
-├── 404.html      # Redirect to main domain
-├── CNAME         # Custom domain config
-└── robots.txt    # SEO config
+├── index.html      # Main landing page (inline CSS, small JS for OS-tab auto-select)
+├── install.html    # Install instructions (compiler + target runtimes + editor extensions)
+├── docs.html       # CLI usage + further reading (links to design docs and prelude on GitHub)
+├── sponsors.html   # Sponsor list / how to sponsor
+├── catastrophes-caused-by-programming-language-defects.html
+├── 404.html        # Redirect to main domain
+├── CNAME           # Custom domain config
+├── robots.txt      # SEO config
+├── favicon.svg / favicon-light.svg
+├── github-logo.svg
+└── fonts/          # Inter, Space Grotesk, JetBrains Mono (woff2)
 ```
+
+The shared site nav (`Install` / `Docs` / `Sponsors` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `sponsors.html`, and `catastrophes-...html`. When changing it, update all five.
 
 ## Deployment
 
@@ -21,7 +30,7 @@ static/
 ## Content Sections
 
 1. Why Awsum — four key differentiators (cross-target equivalence, stack-safe recursion, honest arithmetic, compile-time platform effects)
-2. Targets table (LLVM, JVM, CLR, WASM, JS) with versions
+2. Targets table (Native (LLVM), JVM, CLR, WASM, JS) with versions
 3. Editor support (VSCode)
 4. Examples with links to the test-suite sources
 5. Installation (compiler + per-target runtimes)
