@@ -1,1 +1,46 @@
 # awsum-lang.org
+
+Static website for the [Awsum](https://awsum-lang.org) programming language, hosted on GitHub Pages.
+
+## Structure
+
+```
+static/
+├── index.html      # Landing page (hero, "Why Awsum?", "Backed by" — the pitch)
+├── install.html    # Install instructions (compiler + target runtimes + editor extensions)
+├── docs.html       # CLI usage + links to design docs and the prelude on GitHub
+├── sponsors.html   # Sponsor list / how to sponsor
+├── catastrophes-caused-by-programming-language-defects.html
+├── 404.html        # Tiny JS redirect to the canonical domain
+├── CNAME           # Custom domain config
+├── robots.txt      # SEO config
+├── favicon.svg / favicon-light.svg
+├── github-logo.svg
+└── fonts/          # Inter, Space Grotesk, JetBrains Mono (self-hosted woff2)
+```
+
+The shared site nav (`Install` / `Docs` / `Sponsors` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `sponsors.html`, and `catastrophes-...html`. When changing it, update all five.
+
+## Deployment
+
+GitHub Pages, custom domain `awsum-lang.org`. The deploy workflow ([`.github/workflows/gh-pages.yml`](.github/workflows/gh-pages.yml)) is `workflow_dispatch` only — auto-deploy on push is deliberately off so `main` can accumulate changes without going live. The site is published from the Actions tab as part of the release window for the matching `awsum` compiler version, not before.
+
+## Design
+
+- Pure HTML/CSS, no build step.
+- Dark / light mode via CSS `prefers-color-scheme` media queries.
+- Web fonts (Inter, Space Grotesk, JetBrains Mono) self-hosted as `woff2` under [`static/fonts/`](static/fonts/) via `@font-face`.
+- max-width ~1140px on desktop, single-column flow that collapses cleanly on mobile.
+- Minimal JavaScript — only the install-page OS tab auto-selector (reads `navigator.userAgent`) and the 404 redirect. No frameworks, no analytics.
+
+## Related
+
+- Compiler: [awsum-lang/awsum](https://github.com/awsum-lang/awsum)
+- VSCode extension: [awsum-lang/awsum-vscode](https://github.com/awsum-lang/awsum-vscode)
+- Zed extension: [awsum-lang/awsum-zed](https://github.com/awsum-lang/awsum-zed)
+- Tree-sitter grammar: [awsum-lang/tree-sitter-awsum](https://github.com/awsum-lang/tree-sitter-awsum)
+- Examples: [awsum-lang/awsum-examples](https://github.com/awsum-lang/awsum-examples)
+
+## License
+
+MIT — see [LICENSE](LICENSE).
