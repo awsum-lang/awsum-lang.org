@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Install the Awsum compiler and target runtimes (Native (LLVM) / JVM / CLR / WASM / JS) on macOS, Linux, or Windows. Editor extensions for Visual Studio Code, IntelliJ IDEA, and Zed."
+      content="Install the Awsum compiler and target runtimes (Native (LLVM) / JVM / CLR / WASM / JS) on macOS, Linux, or Windows. Editor extensions for Visual Studio Code, IntelliJ IDEA, Zed, and Neovim."
     />
     <link
       rel="icon"
@@ -649,7 +649,9 @@ winget install OpenJS.NodeJS</code></pre>
       </ul>
       <p>
         Syntax highlighting, formatting, inline diagnostics, quick fixes,
-        outline, breadcrumbs, workspace symbols.
+        outline, breadcrumbs, workspace symbols. Tested on Visual Studio Code;
+        expected to work in other VSIX / Open VSX-compatible editors — Cursor,
+        Windsurf, VSCodium, Positron, Trae, Theia.
       </p>
 
       <h4 class="editor-h4 editor-other">IntelliJ IDEA</h4>
@@ -673,10 +675,10 @@ winget install OpenJS.NodeJS</code></pre>
       </ul>
       <p>
         Syntax highlighting, formatting, inline diagnostics, quick fixes,
-        outline, breadcrumbs, workspace symbols. Tested on IntelliJ IDEA
-        2026.x; expected to work in other IntelliJ-based IDEs — Rider,
-        CLion, WebStorm, PyCharm, GoLand, RubyMine, PhpStorm, RustRover,
-        DataGrip, Android Studio.
+        outline, breadcrumbs, workspace symbols. Tested on IntelliJ IDEA 2026.x;
+        expected to work in other IntelliJ-based IDEs — Rider, CLion, WebStorm,
+        PyCharm, GoLand, RubyMine, PhpStorm, RustRover, DataGrip, DataSpell,
+        Android Studio.
       </p>
 
       <h4 class="editor-h4 editor-other">Zed</h4>
@@ -691,9 +693,27 @@ winget install OpenJS.NodeJS</code></pre>
         </li>
       </ul>
       <p>
-        Syntax highlighting (Tree-sitter), formatting, inline diagnostics,
-        quick fixes, outline, breadcrumbs, workspace symbols. Zed
-        Extensions registry listing pending review.
+        Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
+        fixes, outline, breadcrumbs, workspace symbols. Zed Extensions registry
+        listing pending review.
+      </p>
+
+      <h4 class="editor-h4 editor-other">Neovim</h4>
+      <ul>
+        <li>
+          <a
+            href="https://github.com/awsum-lang/awsum-nvim#install"
+            target="_blank"
+            rel="noopener"
+            >Plugin install — vim.pack, lazy.nvim, or manual (see README)</a
+          >
+        </li>
+      </ul>
+      <p>
+        Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
+        fixes, outline, breadcrumbs, workspace symbols. Requires Neovim 0.12+
+        and a C compiler — the bundled Tree-sitter parser is compiled on first
+        use (~1&nbsp;second, cached on disk).
       </p>
 
       <h4 class="editor-h4 editor-other">Other editors</h4>
