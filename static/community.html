@@ -147,7 +147,19 @@
         padding: 22px 0 12px;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
+      }
+      header.site .nav-brand {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        border-bottom: none;
+      }
+      header.site .nav-brand:hover {
+        border-bottom: none;
+        color: var(--ink-2);
       }
       header.site nav {
         display: flex;
@@ -265,6 +277,7 @@
   <body>
     <div class="wrap">
       <header class="site">
+        <a href="/" class="nav-brand">Awsum</a>
         <nav>
           <a href="/install" class="nav-link">Install</a>
           <a href="/docs" class="nav-link">Docs</a>
