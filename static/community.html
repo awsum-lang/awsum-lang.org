@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Sponsor Awsum</title>
+    <title>Community — Awsum</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Sponsor Awsum on GitHub Sponsors. Tiers, recognition, and what your support enables for the project."
+      content="The Awsum team publishes news on X, LinkedIn, Reddit, Bluesky, Mastodon, and YouTube, and accepts invites to meetups, podcasts, and conferences. Forums and chat rooms are for anyone to run."
     />
     <link
       rel="icon"
@@ -238,30 +238,27 @@
         margin: 0;
       }
 
-      /* SPONSOR CTA + EMPTY BACKERS */
-      .cta-sponsor {
-        display: inline-block;
-        margin-top: 8px;
-        padding: 13px 24px;
-        background: var(--accent);
-        color: #fff;
-        font-family: var(--font-display);
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: -0.005em;
-        border-radius: 6px;
-        border-bottom: none;
-        transition: opacity 0.12s;
+      /* TALKS */
+      .talks p {
+        max-width: 780px;
       }
-      .cta-sponsor:hover {
-        opacity: 0.9;
-        border-bottom: none;
+      .talks ul {
+        max-width: 780px;
+        padding-left: 22px;
+        margin: 0 0 1em;
       }
-      .backers-empty {
-        padding: 16px 0 24px;
-        color: var(--ink-3);
-        font-family: var(--font-display);
-        font-size: 17px;
+      .talks ul li {
+        margin-bottom: 8px;
+      }
+
+      /* SOCIAL */
+      .social {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .social li {
+        margin-bottom: 6px;
       }
     </style>
   </head>
@@ -271,8 +268,8 @@
         <nav>
           <a href="/install" class="nav-link">Install</a>
           <a href="/docs" class="nav-link">Docs</a>
-          <a href="/sponsors" class="nav-link active">Sponsors</a>
-          <a href="/community" class="nav-link">Community</a>
+          <a href="/sponsors" class="nav-link">Sponsors</a>
+          <a href="/community" class="nav-link active">Community</a>
           <a
             href="https://github.com/awsum-lang/awsum"
             target="_blank"
@@ -286,34 +283,107 @@
 
       <!-- HERO -->
       <section class="hero hero-page">
-        <h1>Sponsor Awsum</h1>
+        <h1>Community</h1>
         <p class="sub">
-          Awsum is open source, run on personal time and paid for out of
-          pocket. Sponsorship turns it into something durable — faster
-          releases, faster issue turnaround, lower risk of stalling.
+          Two things from the Awsum organization: news on the channels below,
+          and we can come talk at your meetup, podcast, or conference.
         </p>
         <p class="sub">
-          Every sponsor also strengthens the case to open-source
-          infrastructure funds (NLnet, Sovereign Tech Fund) reviewing the
-          project in parallel — so a small recurring contribution
-          compounds.
+          Forums, chat rooms, and anything that needs moderation — for you or
+          anyone else to run.
         </p>
       </section>
 
-      <!-- CURRENT SPONSORS -->
+      <!-- TALKS & MEETUPS -->
       <header class="sec-hd">
-        <h2>Current sponsors</h2>
+        <h2>Conferences, meetups, podcasts</h2>
       </header>
 
-      <div class="backers-empty">No sponsors yet — be the first.</div>
+      <section class="talks">
+        <p>
+          We'd love to participate (online works best on our end) — here are
+          some directions we could take it:
+        </p>
+        <ul>
+          <li>
+            Functional programming, more broadly — what the paradigm buys you.
+          </li>
+          <li>
+            What Awsum guarantees, and how the language is shaped to do it.
+          </li>
+          <li>
+            How defunctionalization makes higher-order code and non-tail
+            recursion stack-safe on every backend.
+          </li>
+          <li>
+            Automatic static lifetimes for a functional language on LLVM and
+            WASM — no lifetime syntax in user code.
+          </li>
+          <li>How the compiler turns one Core IR into five backends.</li>
+          <li>
+            Software reliability for the people paying for it — what to ask, and
+            what's actually achievable.
+          </li>
+        </ul>
+        <p>
+          DM on any of the channels below with a rough date and what your
+          audience is into.
+        </p>
+      </section>
 
-      <a
-        class="cta-sponsor"
-        href="https://github.com/sponsors/awsum-lang"
-        target="_blank"
-        rel="noopener"
-        >Become a sponsor</a
-      >
+      <!-- FOLLOW -->
+      <header class="sec-hd">
+        <h2>Follow</h2>
+      </header>
+
+      <ul class="social">
+        <li>
+          <a
+            href="https://www.linkedin.com/company/117284668/"
+            target="_blank"
+            rel="noopener"
+            >LinkedIn · /company/awsum-lang</a
+          >
+        </li>
+        <li>
+          <a href="https://x.com/awsumlang" target="_blank" rel="noopener"
+            >X · @awsumlang</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://bsky.app/profile/awsumlang.bsky.social"
+            target="_blank"
+            rel="noopener"
+            >Bluesky · @awsumlang.bsky.social</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://mastodon.social/@awsumlang"
+            target="_blank"
+            rel="noopener"
+            >Mastodon · @awsumlang@mastodon.social</a
+          >
+        </li>
+
+        <li>
+          <a
+            href="https://www.reddit.com/r/awsumlang/"
+            target="_blank"
+            rel="noopener"
+            >Reddit · r/awsumlang</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://www.youtube.com/@awsumlang"
+            target="_blank"
+            rel="noopener"
+            >YouTube · @awsumlang</a
+          >
+        </li>
+      </ul>
     </div>
   </body>
 </html>
