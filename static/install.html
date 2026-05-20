@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Install the Awsum compiler and target runtimes (Native (LLVM) / JVM / CLR / WASM / JS) on macOS, Linux, or Windows. Editor extensions for Visual Studio Code, IntelliJ IDEA, Zed, and Neovim."
+      content="Install the Awsum compiler and target runtimes (Native (LLVM) / JVM / CLR / WASM / JS) on macOS, Linux, or Windows. Editor extensions for Visual Studio Code, IntelliJ IDEA, Zed, Neovim, and Emacs."
     />
     <link
       rel="icon"
@@ -168,7 +168,19 @@
         padding: 22px 0 12px;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
+      }
+      header.site .nav-brand {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        border-bottom: none;
+      }
+      header.site .nav-brand:hover {
+        border-bottom: none;
+        color: var(--ink-2);
       }
       header.site nav {
         display: flex;
@@ -390,10 +402,12 @@
   <body>
     <div class="wrap">
       <header class="site">
+        <a href="/" class="nav-brand">Awsum</a>
         <nav>
           <a href="/install" class="nav-link active">Install</a>
           <a href="/docs" class="nav-link">Docs</a>
           <a href="/sponsors" class="nav-link">Sponsors</a>
+          <a href="/community" class="nav-link">Community</a>
           <a
             href="https://github.com/awsum-lang/awsum"
             target="_blank"
@@ -688,14 +702,14 @@ winget install OpenJS.NodeJS</code></pre>
             href="https://github.com/awsum-lang/awsum-zed"
             target="_blank"
             rel="noopener"
-            >Manual install — clone &amp; build (see README)</a
+            >Manual install — clone &amp; build</a
           >
         </li>
+        <li>Zed Extensions registry – pending review</li>
       </ul>
       <p>
         Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
-        fixes, outline, breadcrumbs, workspace symbols. Zed Extensions registry
-        listing pending review.
+        fixes, outline, breadcrumbs, workspace symbols.
       </p>
 
       <h4 class="editor-h4 editor-other">Neovim</h4>
@@ -705,7 +719,7 @@ winget install OpenJS.NodeJS</code></pre>
             href="https://github.com/awsum-lang/awsum-nvim#install"
             target="_blank"
             rel="noopener"
-            >Plugin install — vim.pack, lazy.nvim, or manual (see README)</a
+            >Plugin install</a
           >
         </li>
       </ul>
@@ -713,7 +727,24 @@ winget install OpenJS.NodeJS</code></pre>
         Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
         fixes, outline, breadcrumbs, workspace symbols. Requires Neovim 0.12+
         and a C compiler — the bundled Tree-sitter parser is compiled on first
-        use (~1&nbsp;second, cached on disk).
+        use.
+      </p>
+
+      <h4 class="editor-h4 editor-other">Emacs</h4>
+      <ul>
+        <li>
+          <a
+            href="https://github.com/awsum-lang/awsum-emacs#install"
+            target="_blank"
+            rel="noopener"
+            >Package install</a
+          >
+        </li>
+      </ul>
+      <p>
+        Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
+        fixes, outline, workspace symbols. Requires Emacs 29.1+ and a C compiler
+        — the Tree-sitter parser is cloned and compiled on first use.
       </p>
 
       <h4 class="editor-h4 editor-other">Other editors</h4>
