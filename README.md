@@ -9,7 +9,7 @@ static/
 ├── index.html      # Landing page (hero, "Why Awsum?", "Backed by" — the pitch)
 ├── install.html    # Install instructions (compiler + target runtimes + editor extensions)
 ├── docs.html       # CLI usage + links to design docs and the prelude on GitHub
-├── sponsors.html   # Sponsor list / how to sponsor
+├── funding.html    # Funding page (pitch + sponsor CTA)
 ├── catastrophes-caused-by-programming-language-defects.html
 ├── 404.html        # Tiny JS redirect to the canonical domain
 ├── CNAME           # Custom domain config
@@ -19,7 +19,7 @@ static/
 └── fonts/          # Inter, Space Grotesk, JetBrains Mono (self-hosted woff2)
 ```
 
-The shared site nav (`Install` / `Docs` / `Sponsors` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `sponsors.html`, and `catastrophes-...html`. When changing it, update all five.
+The shared site nav (`Install` / `Docs` / `Funding` / `Community` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `funding.html`, `community.html`, and `catastrophes-...html`. When changing it, update all six.
 
 ## Deployment
 
