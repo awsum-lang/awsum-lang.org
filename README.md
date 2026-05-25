@@ -41,6 +41,10 @@ GitHub Pages, custom domain `awsum-lang.org`. The deploy workflow ([`.github/wor
 - Tree-sitter grammar: [awsum-lang/tree-sitter-awsum](https://github.com/awsum-lang/tree-sitter-awsum)
 - Examples: [awsum-lang/awsum-examples](https://github.com/awsum-lang/awsum-examples)
 
+## AI use
+
+This site is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
