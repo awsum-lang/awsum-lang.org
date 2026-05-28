@@ -469,17 +469,26 @@ node out.js "world"</code></pre>
         <section class="cmd">
           <h4>awsum run</h4>
           <p>
-            Compile to a temporary location and execute with the matching system
-            runtime in one step — useful for trying things out without leaving
-            build artifacts on disk. Pick the target with
-            <code>-t</code>. Input passed via <code>--input</code> or
-            <code>--stdin</code> reaches <code>main</code> directly.
+            Compile to a temporary location and run with the matching system
+            runtime in one step. Pick the target with <code>-t</code>.
+            Everything after <code>--</code> is forwarded as command-line
+            arguments and read with <code>IO.Args.getArgs</code> as a
+            <code>List String</code>; with no <code>--</code>, the list is
+            empty (<code>Right Nil</code>). The child inherits
+            <code>awsum</code>'s stdin, so a shell pipe or
+            <code>&lt; file</code> reaches <code>IO.Stdin.readAll</code>
+            verbatim. The two channels are independent and can be used
+            together.
           </p>
-          <pre><code><span class="tok-cm"># Run with inline input</span>
-awsum run --program-type cli -t llvm --input "world" src/Main.aww
+          <pre><code><span class="tok-cm"># argv — after the -- separator</span>
+awsum run --program-type cli -t llvm src/Main.aww -- hello world
 
-<span class="tok-cm"># Run with stdin</span>
-echo "world" | awsum run --program-type cli -t llvm --stdin src/Main.aww</code></pre>
+<span class="tok-cm"># stdin — pipe or &lt; file</span>
+echo "world" | awsum run --program-type cli -t llvm src/Main.aww
+awsum run --program-type cli -t llvm src/Main.aww &lt; input.txt
+
+<span class="tok-cm"># both at once</span>
+echo "data" | awsum run --program-type cli -t llvm src/Main.aww -- hello</code></pre>
         </section>
 
         <section class="cmd">
