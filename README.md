@@ -21,7 +21,7 @@ static/
 └── fonts/          # Inter, Space Grotesk, JetBrains Mono (self-hosted woff2)
 ```
 
-The shared site nav (`Install` / `Docs` / `Funding` / `Community` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `funding.html`, `community.html`, and `catastrophes-...html`. When changing it, update all six.
+The shared site nav (`Install` / `Docs` / `Funding` / `Community` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `funding.html`, `community.html`, and `catastrophes-...html`. When changing it, update all six. The same six files also carry a hand-duplicated footer linking `llms.txt` / `llms-full.txt` (the AI/LLM-docs pointer) — keep it in sync across all six too.
 
 ## Deployment
 
