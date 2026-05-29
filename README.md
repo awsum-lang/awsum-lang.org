@@ -14,6 +14,8 @@ static/
 ├── 404.html        # Tiny JS redirect to the canonical domain
 ├── CNAME           # Custom domain config
 ├── robots.txt      # SEO config
+├── llms.txt        # LLM-facing index — links to llms-full.txt, design docs, repos
+├── llms-full.txt   # Self-contained LLM reference — language, prelude API, tested example
 ├── favicon.svg / favicon-light.svg
 ├── github-logo.svg
 └── fonts/          # Inter, Space Grotesk, JetBrains Mono (self-hosted woff2)

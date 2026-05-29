@@ -1,0 +1,41 @@
+# Awsum
+
+> Awsum is a correctness-first, statically-typed functional language. One source compiles to five backends — Native (LLVM), JVM, CLR, WASM, and JS — and produces identical stdout on every one (a compiler invariant, verified across all five backends on every commit). Errors are values (typed `Either`: overflow, underflow, precision loss, division by zero, string-too-long, parse failure — never exceptions, `NaN`, `null`, or silent wraparound). Recursion of any shape (self, mutual, tail, non-tail) is stack-safe on every backend with no user annotations. Effects are platform-aware data via `IO e a`.
+
+The single best file to read first is the full reference below: it is self-contained and enough to understand Awsum and write a program that compiles. Syntax is in the ML / Haskell family. Status: version 0.0.4, pre-1.0; program type `cli` only so far.
+
+## Full reference
+
+- [llms-full.txt](https://awsum-lang.org/llms-full.txt): complete language reference, prelude API with exact signatures, CLI usage, and a complete tested example program. Read this first — one fetch is enough.
+
+## Documentation (raw markdown, one fetch each)
+
+- [principles](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/principles.md): what the language guarantees and how the compiler resolves trade-offs (correctness > runtime perf > compile speed > convenience).
+- [type-system](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/type-system.md): user-facing type-system reference with programs that compile and programs that are rejected.
+- [prelude](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/prelude.md): how the bundled prelude coexists with per-target compiler built-ins.
+- [recursion](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/recursion.md): how any recursion shape becomes a stack-safe loop on every backend.
+- [memory-management](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/memory-management.md): how heap is reclaimed per backend, with no user annotation.
+- [targets](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/targets.md): per-backend implementation details (LLVM IR, JVM bytecode, CIL, WAT, JS).
+- [pipeline](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/pipeline.md): phase-by-phase walkthrough of `awsum build`.
+- [compatibility](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/compatibility.md): supported targets and host OS / architecture matrix.
+- [platform-version-policy](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/platform-version-policy.md): minimum runtime version per backend.
+- [testing](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/testing.md): snapshot and property test layers.
+- [grammar.ebnf](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/spec/grammar.ebnf): formal surface grammar.
+- [roadmap](https://raw.githubusercontent.com/awsum-lang/awsum/main/docs/roadmap.md): short public roadmap.
+- [Prelude.aww](https://raw.githubusercontent.com/awsum-lang/awsum/main/stdlib/Prelude.aww): the standard prelude — every type and function available in every program without an import.
+
+## Repositories
+
+- [awsum](https://github.com/awsum-lang/awsum): the compiler — parser, typechecker, Core IR, five backends, and the `awsum lsp` server (Haskell).
+- [awsum-examples](https://github.com/awsum-lang/awsum-examples): standalone example programs (`.aww`).
+- [awsum-vscode](https://github.com/awsum-lang/awsum-vscode): Visual Studio Code extension (LSP client).
+- [awsum-zed](https://github.com/awsum-lang/awsum-zed): Zed extension (LSP client).
+- [awsum-intellij](https://github.com/awsum-lang/awsum-intellij): IntelliJ Platform plugin (LSP client).
+- [awsum-nvim](https://github.com/awsum-lang/awsum-nvim): Neovim plugin (LSP client).
+- [awsum-emacs](https://github.com/awsum-lang/awsum-emacs): Emacs package (LSP client via eglot).
+- [tree-sitter-awsum](https://github.com/awsum-lang/tree-sitter-awsum): Tree-sitter grammar.
+- [awsum-lang.org](https://github.com/awsum-lang/awsum-lang.org): this website.
+
+## Install
+
+- [llms-full.txt](https://awsum-lang.org/llms-full.txt): per-OS install instructions for the compiler and target runtimes, editor extensions, and CLI usage — in the "Install and run" section.
