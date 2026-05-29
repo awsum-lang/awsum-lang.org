@@ -13,7 +13,8 @@ static/
 ├── catastrophes-caused-by-programming-language-defects.html
 ├── 404.html        # Tiny JS redirect to the canonical domain
 ├── CNAME           # Custom domain config
-├── robots.txt      # SEO config
+├── robots.txt      # SEO config (+ Sitemap: directive → sitemap.xml)
+├── sitemap.xml     # XML sitemap (6 pages + llms.txt/llms-full.txt) — for crawler re-indexing
 ├── llms.txt        # LLM-facing index — links to llms-full.txt, design docs, repos
 ├── llms-full.txt   # Self-contained LLM reference — language, prelude API, tested example
 ├── favicon.svg / favicon-light.svg
