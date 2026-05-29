@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://awsum-lang.org/sitemap.xml
