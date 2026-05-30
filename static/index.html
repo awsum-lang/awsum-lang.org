@@ -22,18 +22,11 @@
     />
     <style>
       @font-face {
-        font-family: "Inter";
+        font-family: "Golos Text";
         font-style: normal;
-        font-weight: 100 900;
+        font-weight: 400 900;
         font-display: swap;
-        src: url("fonts/Inter.woff2") format("woff2");
-      }
-      @font-face {
-        font-family: "Space Grotesk";
-        font-style: normal;
-        font-weight: 100 900;
-        font-display: swap;
-        src: url("fonts/SpaceGrotesk.woff2") format("woff2");
+        src: url("fonts/GolosText.woff2") format("woff2");
       }
       @font-face {
         font-family: "JetBrains Mono";
@@ -44,40 +37,40 @@
       }
       :root {
         color-scheme: light dark;
-        --paper: #fafafa;
+        --paper: #ffffff;
         --paper-2: #eeeeee;
         --paper-3: #e2e2e2;
-        --ink: #1a1a1a;
+        --ink: #000000;
         --ink-2: #3a3a3a;
         --ink-3: #6a6a6a;
         --ink-4: #9a9a9a;
         --line: rgba(0, 0, 0, 0.14);
         --line-soft: rgba(0, 0, 0, 0.08);
         --line-hair: rgba(0, 0, 0, 0.05);
-        --accent: oklch(0.5839 0.1707 241.41);
+        --accent: var(--ink);
         --font-display:
-          "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto,
+          "Golos Text", system-ui, -apple-system, Segoe UI, Roboto,
           sans-serif;
         --font-mono:
           "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
           monospace;
         --font-body:
-          "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          "Golos Text", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
           Cantarell, "Noto Sans", Helvetica, Arial, sans-serif;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --paper: #0e0e0e;
+          --paper: #000000;
           --paper-2: #161616;
           --paper-3: #1f1f1f;
-          --ink: #ebebeb;
+          --ink: #ffffff;
           --ink-2: #c4c4c4;
           --ink-3: #8b8b8b;
           --ink-4: #575757;
           --line: rgba(255, 255, 255, 0.14);
           --line-soft: rgba(255, 255, 255, 0.08);
           --line-hair: rgba(255, 255, 255, 0.05);
-          --accent: oklch(0.5839 0.1707 241.41);
+          --accent: var(--ink);
         }
       }
       * {
@@ -110,7 +103,7 @@
       a {
         color: var(--accent);
         text-decoration: none;
-        border-bottom: 1px solid transparent;
+        border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent);
         transition: border-color 0.12s;
       }
       a:hover {
@@ -146,8 +139,10 @@
       header.site {
         padding: 22px 0 12px;
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
+        row-gap: 12px;
       }
       header.site .nav-brand {
         font-family: var(--font-display);
@@ -156,6 +151,7 @@
         letter-spacing: -0.02em;
         color: var(--ink);
         border-bottom: none;
+        padding-right: 28px;
       }
       header.site .nav-brand:hover {
         border-bottom: none;
@@ -163,8 +159,9 @@
       }
       header.site nav {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 28px;
+        gap: 14px 28px;
       }
       header.site nav a {
         display: inline-flex;
@@ -285,7 +282,7 @@
         display: block;
         width: 100%;
         max-width: 800px;
-        margin: 32px auto 8px;
+        margin: 32px 0 8px;
         border-radius: 8px;
         background: var(--paper-2);
       }
@@ -295,8 +292,8 @@
         display: inline-block;
         margin-top: 8px;
         padding: 13px 24px;
-        background: var(--accent);
-        color: #fff;
+        background: var(--ink);
+        color: var(--paper);
         font-family: var(--font-display);
         font-size: 16px;
         font-weight: 600;
