@@ -17,8 +17,7 @@ static/
 ├── sitemap.xml     # XML sitemap (6 pages + llms.txt/llms-full.txt) — for crawler re-indexing
 ├── llms.txt        # LLM-facing index — links to llms-full.txt, design docs, repos
 ├── llms-full.txt   # Self-contained LLM reference — language, prelude API, tested example
-├── favicon.svg / favicon-light.svg
-├── github-logo.svg
+├── icons/          # favicon-dark.svg, favicon-light.svg, github-logo.svg
 └── fonts/          # Golos Text, JetBrains Mono (self-hosted woff2)
 ```
 

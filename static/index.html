@@ -11,13 +11,13 @@
     <link
       rel="icon"
       type="image/svg+xml"
-      href="favicon-light.svg"
+      href="icons/favicon-light.svg"
       media="(prefers-color-scheme: light)"
     />
     <link
       rel="icon"
       type="image/svg+xml"
-      href="favicon.svg"
+      href="icons/favicon-dark.svg"
       media="(prefers-color-scheme: dark)"
     />
     <style>
@@ -301,9 +301,11 @@
         border-radius: 6px;
         border-bottom: none;
         transition: opacity 0.12s;
+        -webkit-user-select: none;
+        user-select: none;
       }
       .cta-sponsor:hover {
-        opacity: 0.9;
+        opacity: 0.85;
         border-bottom: none;
       }
       .backers-empty {
@@ -329,7 +331,7 @@
             rel="noopener"
             aria-label="GitHub"
           >
-            <img src="github-logo.svg" alt="GitHub" class="gh-logo" />
+            <img src="icons/github-logo.svg" alt="GitHub" class="gh-logo" />
           </a>
         </nav>
       </header>
@@ -517,6 +519,16 @@
           color: var(--ink-3);
         "
       >
+        <picture>
+          <source srcset="icons/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+          <img
+            src="icons/logo-light.svg"
+            alt="Awsum"
+            width="44"
+            height="44"
+            style="display: block; margin-bottom: 16px"
+          />
+        </picture>
         Docs for LLMs &amp; AI tools:
         <a href="/llms.txt">llms.txt</a> ·
         <a href="/llms-full.txt">llms-full.txt</a>
