@@ -17,9 +17,8 @@ static/
 ├── sitemap.xml     # XML sitemap (6 pages + llms.txt/llms-full.txt) — for crawler re-indexing
 ├── llms.txt        # LLM-facing index — links to llms-full.txt, design docs, repos
 ├── llms-full.txt   # Self-contained LLM reference — language, prelude API, tested example
-├── favicon.svg / favicon-light.svg
-├── github-logo.svg
-└── fonts/          # Inter, Space Grotesk, JetBrains Mono (self-hosted woff2)
+├── icons/          # favicon-dark.svg, favicon-light.svg, github-logo.svg
+└── fonts/          # Golos Text, JetBrains Mono (self-hosted woff2)
 ```
 
 The shared site nav (`Install` / `Docs` / `Funding` / `Community` / GitHub icon) is duplicated by hand across `index.html`, `install.html`, `docs.html`, `funding.html`, `community.html`, and `catastrophes-...html`. When changing it, update all six. The same six files also carry a hand-duplicated footer linking `llms.txt` / `llms-full.txt` (the AI/LLM-docs pointer) — keep it in sync across all six too.
@@ -32,7 +31,8 @@ GitHub Pages, custom domain `awsum-lang.org`. The deploy workflow ([`.github/wor
 
 - Pure HTML/CSS, no build step.
 - Dark / light mode via CSS `prefers-color-scheme` media queries.
-- Web fonts (Inter, Space Grotesk, JetBrains Mono) self-hosted as `woff2` under [`static/fonts/`](static/fonts/) via `@font-face`.
+- Web fonts (Golos Text for everything except code, JetBrains Mono for code) self-hosted as `woff2` under [`static/fonts/`](static/fonts/) via `@font-face`.
+- Strict monochrome palette: black is `#000000`, white is `#ffffff`, with greys reserved for text hierarchy and surfaces. Auto light/dark inverts the two.
 - max-width ~1140px on desktop, single-column flow that collapses cleanly on mobile.
 - Minimal JavaScript — only the install-page OS tab auto-selector (reads `navigator.userAgent`) and the 404 redirect. No frameworks, no analytics.
 
