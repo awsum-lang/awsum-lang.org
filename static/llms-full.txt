@@ -4,7 +4,7 @@ Awsum is a correctness-first, statically-typed functional language in the ML / H
 
 This file is self-contained: reading it is enough to understand the language and write a program that compiles. Where prose examples and the bundled prelude could disagree, the prelude (`stdlib/Prelude.aww`, linked at the end) and the complete tested program near the bottom of this file are authoritative.
 
-Status: version 0.0.4, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
+Status: version 0.0.5, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
 
 ## What the language guarantees
 
@@ -26,7 +26,7 @@ macOS (Apple Silicon):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.4/awsum-0.0.4-macos-aarch64.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version          # verify; ~/.local/bin must be on PATH
 ```
@@ -35,7 +35,7 @@ Linux (x86_64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.4/awsum-0.0.4-linux-x86_64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -44,7 +44,7 @@ Linux (aarch64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.4/awsum-0.0.4-linux-aarch64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -52,14 +52,14 @@ awsum --version
 Windows (x86_64, PowerShell) — installs into `%LOCALAPPDATA%\Microsoft\WindowsApps`, on PATH by default since Windows 10:
 
 ```powershell
-$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.4/awsum-0.0.4-windows-x86_64.zip"
+$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force
 awsum --version
 ```
 
-Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.4; check the releases page for the current tag.
+Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.5; check the releases page for the current tag.
 
 ### Install target runtimes (per OS)
 
@@ -345,6 +345,7 @@ tailList : List a -> Maybe (List a)
 
 -- IO  (see the IO section above)
 pureIO / failIO / bindIO / andThenIO / mapIO / mapIOError / handleErrorIO
+eitherToIO : Either e a -> IO e a   -- lift an Either into IO, preserving the error row
 
 -- Int32  (arithmetic returns Either with a typed error; no wraparound)
 minInt32 : Int32                                          -- -2_147_483_648
@@ -369,6 +370,37 @@ showUnderflowError / showOverflowError / showStringTooLong / showUnpairedUtf16Su
 ```
 
 There is no `[1,2,3]` list syntax and no `::` operator — build lists with `Cons h t` and `Nil`. There is no polymorphic `show` yet (type classes are on the roadmap); use the per-type `show*` helpers.
+
+## A complete program: greeting from a command-line argument
+
+A real tested program showing the argv flow end to end: read arguments, run a fallible `do` block over `Either`, lift the result into `IO`, print it, and handle every failure in the error row before `main` returns `IO Never Unit`.
+
+```awsum
+import IO.Stdout
+import IO.Args
+
+type NoArg = NoArg
+
+main : IO Never Unit
+main = IO.Args.getArgs
+  |> andThenIO (\args -> eitherToIO (greet args))
+  |> andThenIO IO.Stdout.print
+  |> handleErrorIO printError
+
+greet : List String -> Either (NoArg | StringTooLong) String
+greet args = do
+  name <- headList args |> nothingAsLeft NoArg
+  hello <- "Hello, " ++ name
+  hello ++ "!"
+
+printError : (StringTooLong | UnpairedUtf16Surrogate | NoArg) -> IO Never Unit
+printError e = case e of
+  StringTooLong -> IO.Stdout.print "STRING_TOO_LONG"
+  UnpairedUtf16Surrogate -> IO.Stdout.print "UNPAIRED_UTF16_SURROGATE"
+  NoArg -> IO.Stdout.print "NO_ARG"
+```
+
+Things to read off it: `headList args |> nothingAsLeft NoArg` bridges a `Maybe` into the `do`-block's `Either`; `++` returns `Either StringTooLong String`, so each step is a `<-`; `eitherToIO` lifts the `Either` into the IO chain, where its error row joins `getArgs`'s `(StringTooLong | UnpairedUtf16Surrogate)`; `handleErrorIO printError` consumes the full union `(StringTooLong | UnpairedUtf16Surrogate | NoArg)` so `main`'s row collapses to `Never`. Run it with `awsum run --program-type cli -t llvm Main.aww -- world`.
 
 ## A complete, tested program
 
