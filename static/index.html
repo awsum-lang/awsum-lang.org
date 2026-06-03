@@ -49,8 +49,7 @@
         --line-hair: rgba(0, 0, 0, 0.05);
         --accent: var(--ink);
         --font-display:
-          "Golos Text", system-ui, -apple-system, Segoe UI, Roboto,
-          sans-serif;
+          "Golos Text", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
         --font-mono:
           "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
           monospace;
@@ -103,7 +102,8 @@
       a {
         color: var(--accent);
         text-decoration: none;
-        border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+        border-bottom: 1px solid
+          color-mix(in srgb, currentColor 30%, transparent);
         transition: border-color 0.12s;
       }
       a:hover {
@@ -339,7 +339,7 @@
       <!-- HERO -->
       <section class="hero">
         <h1>Awsum</h1>
-        <p class="lead">Correctness-first, cross-target functional language.</p>
+        <p class="lead">Correctness-first, cross-target functional language</p>
         <p class="sub">
           <b>Correctness-first:</b> No numeric overflow, underflow, or precision
           loss. No <code>NaN</code>, <code>null</code>, <code>nil</code>, or
@@ -520,7 +520,10 @@
         "
       >
         <picture>
-          <source srcset="icons/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+          <source
+            srcset="icons/logo-dark.svg"
+            media="(prefers-color-scheme: dark)"
+          />
           <img
             src="icons/logo-light.svg"
             alt="Awsum"

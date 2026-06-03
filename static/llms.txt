@@ -2,7 +2,7 @@
 
 > Awsum is a correctness-first, statically-typed functional language. One source compiles to five backends — Native (LLVM), JVM, CLR, WASM, and JS — and produces identical stdout on every one (a compiler invariant, verified across all five backends on every commit). Errors are values (typed `Either`: overflow, underflow, precision loss, division by zero, string-too-long, parse failure — never exceptions, `NaN`, `null`, or silent wraparound). Recursion of any shape (self, mutual, tail, non-tail) is stack-safe on every backend with no user annotations. Effects are platform-aware data via `IO e a`.
 
-The single best file to read first is the full reference below: it is self-contained and enough to understand Awsum and write a program that compiles. Syntax is in the ML / Haskell family. Status: version 0.0.5, pre-1.0; program type `cli` only so far.
+The single best file to read first is the full reference below: it is self-contained and enough to understand Awsum and write a program that compiles. Syntax is in the ML / Haskell family. Status: version 0.0.6, pre-1.0; program type `cli` only so far.
 
 ## Full reference
 
