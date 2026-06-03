@@ -4,7 +4,7 @@ Awsum is a correctness-first, statically-typed functional language in the ML / H
 
 This file is self-contained: reading it is enough to understand the language and write a program that compiles. Where prose examples and the bundled prelude could disagree, the prelude (`stdlib/Prelude.aww`, linked at the end) and the complete tested program near the bottom of this file are authoritative.
 
-Status: version 0.0.5, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
+Status: version 0.0.6, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
 
 ## What the language guarantees
 
@@ -26,7 +26,7 @@ macOS (Apple Silicon):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-macos-aarch64.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version          # verify; ~/.local/bin must be on PATH
 ```
@@ -35,7 +35,7 @@ Linux (x86_64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-linux-x86_64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -44,7 +44,7 @@ Linux (aarch64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-linux-aarch64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -52,14 +52,14 @@ awsum --version
 Windows (x86_64, PowerShell) — installs into `%LOCALAPPDATA%\Microsoft\WindowsApps`, on PATH by default since Windows 10:
 
 ```powershell
-$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.5/awsum-0.0.5-windows-x86_64.zip"
+$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force
 awsum --version
 ```
 
-Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.5; check the releases page for the current tag.
+Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.6; check the releases page for the current tag.
 
 ### Install target runtimes (per OS)
 
@@ -114,7 +114,7 @@ LSP-based tooling (diagnostics, formatting, quick fixes, outline, workspace symb
 awsum build --program-type cli -t llvm|jvm|clr|wasm|js [-o OUT] Main.aww
 
 # Compile and run in one step. argv goes after --, read via IO.Args.getArgs.
-# stdin is inherited, so a pipe or < file reaches IO.Stdin.readAll.
+# stdin is inherited, so a pipe or < file reaches IO.Stdin.readAllString / readAllBytes.
 awsum run --program-type cli -t llvm Main.aww -- arg1 arg2
 echo "input" | awsum run --program-type cli -t jvm Main.aww
 
@@ -286,10 +286,11 @@ CLI platform effects (each needs `--program-type cli` plus its import):
 ```awsum
 IO.Stdout.print  : String -> IO Never Unit                                          -- import IO.Stdout
 IO.Args.getArgs  : IO (StringTooLong | UnpairedUtf16Surrogate) (List String)         -- import IO.Args
-IO.Stdin.readAll : IO (StringTooLong | UnpairedUtf16Surrogate) String                -- import IO.Stdin
+IO.Stdin.readAllString : IO (StringTooLong | InvalidUtf8) String                -- import IO.Stdin
+IO.Stdin.readAllBytes  : IO Never (List UInt8)                                      -- import IO.Stdin
 ```
 
-`IO.Args.getArgs` reads all command-line arguments as a `List String` (there is no `main` parameter for argv). `IO.Stdin.readAll` consumes stdin to EOF and decodes UTF-8. Both fail all-or-nothing if any byte fails to decode.
+`IO.Args.getArgs` reads all command-line arguments as a `List String` (there is no `main` parameter for argv). `IO.Stdin.readAllString` consumes stdin to EOF and decodes it as strict UTF-8, with `Left InvalidUtf8` on any malformed byte sequence; `IO.Stdin.readAllBytes` returns the raw bytes undecoded, so it cannot fail. Both `getArgs` and `readAllString` fail all-or-nothing — one element that can't decode fails the whole call.
 
 Sequencing two prints:
 
@@ -312,7 +313,7 @@ A new binding may not reuse a name visible in any enclosing scope of the same mo
 
 Exact signatures from the bundled prelude. Note that string concatenation and all fallible arithmetic return `Either` with a typed error — they do not return bare values.
 
-Types: `Unit`, `Never`, `Bool = True | False`, `Maybe a = Nothing | Just a`, `Either a b = Left a | Right b`, `List a = Nil | Cons a (List a)`, `Tuple2 a b = Tuple2 a b`, `Tuple3 a b c = Tuple3 a b c`, `IO e a`. Error types (each nullary): `UnderflowError`, `OverflowError`, `StringTooLong`, `UnpairedUtf16Surrogate`, `ParseError`, `BrokenPipe`.
+Types: `Unit`, `Never`, `Bool = True | False`, `Maybe a = Nothing | Just a`, `Either a b = Left a | Right b`, `List a = Nil | Cons a (List a)`, `Tuple2 a b = Tuple2 a b`, `Tuple3 a b c = Tuple3 a b c`, `IO e a`. Error types (each nullary): `UnderflowError`, `OverflowError`, `StringTooLong`, `UnpairedUtf16Surrogate`, `InvalidUtf8`, `ParseError`, `BrokenPipe`.
 
 ```awsum
 -- String  (note: concatenation can fail with StringTooLong)
@@ -365,8 +366,12 @@ minUInt8 / maxUInt8 / eqUInt8 / showUInt8 / predUInt8 / succUInt8 / addUInt8 / s
 minUInt32 / maxUInt32 / eqUInt32 / showUInt32 / predUInt32 / succUInt32 / addUInt32 / subUInt32 / mulUInt32 / parseUInt32
 -- unsigned add/mul return Either OverflowError; unsigned sub returns Either UnderflowError
 
+-- Bytes to hex (lowercase, zero-padded, no 0x prefix)
+byteToHexStringNoPrefix  : UInt8 -> String                            -- 0 -> "00", 255 -> "ff"
+bytesToHexStringNoPrefix : List UInt8 -> Either StringTooLong String  -- Left only past the string cap
+
 -- Error rendering
-showUnderflowError / showOverflowError / showStringTooLong / showUnpairedUtf16Surrogate / showParseError / showBrokenPipe : <Error> -> String
+showUnderflowError / showOverflowError / showStringTooLong / showUnpairedUtf16Surrogate / showInvalidUtf8 / showParseError / showBrokenPipe : <Error> -> String
 ```
 
 There is no `[1,2,3]` list syntax and no `::` operator — build lists with `Cons h t` and `Nil`. There is no polymorphic `show` yet (type classes are on the roadmap); use the per-type `show*` helpers.
