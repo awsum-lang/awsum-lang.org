@@ -490,7 +490,7 @@ Things to read off it: `main : IO Never Unit`; `do` over `Either` with `<-`; `pr
 ## What you can rely on without thinking about it
 
 - **Stack safety.** Any recursion you write runs in bounded stack on every backend. No `tailRecM`, no manual accumulator gymnastics required for correctness.
-- **Memory.** Every heap cell is reclaimed when unreachable — host GC on JVM/CLR/JS, compiler-emitted reference counting on LLVM/WASM. You write no `free`, no `Rc::clone`, no GC hints.
+- **Memory.** Every heap cell is reclaimed when unreachable — host GC on JVM/CLR/JS, compiler-emitted reference counting on LLVM/WASM. You write no `free`, no `Rc::clone`, no GC hints. The CLR target enables **Server GC** by default (set in the generated `runtimeconfig.json`, which `dotnet` reads next to the DLL): awsum allocates a heap object per Core cell, and on that allocation-heavy pattern Server GC's parallel per-core heaps measured several times faster than Workstation GC, at the cost of higher RSS. You don't need to configure any of this — Server GC is the better default for awsum's allocation pattern, and Workstation GC would only be slower.
 - **Cross-target identity.** The same source produces identical stdout on LLVM, JVM, CLR, WASM, and JS, checked on every commit by snapshot tests and by property tests that compare each backend against an independent oracle.
 
 ## Full design docs (raw markdown, one fetch each)
