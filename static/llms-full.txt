@@ -4,7 +4,7 @@ Awsum is a correctness-first, statically-typed functional language in the ML / H
 
 This file is self-contained: reading it is enough to understand the language and write a program that compiles. Where prose examples and the bundled prelude could disagree, the prelude (`stdlib/Prelude.aww`, linked at the end) and the complete tested program near the bottom of this file are authoritative.
 
-Status: version 0.0.6, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
+Status: version 0.0.7, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
 
 ## What the language guarantees
 
@@ -26,7 +26,7 @@ macOS (Apple Silicon):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-macos-aarch64.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version          # verify; ~/.local/bin must be on PATH
 ```
@@ -35,7 +35,7 @@ Linux (x86_64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-linux-x86_64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -44,7 +44,7 @@ Linux (aarch64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-linux-aarch64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -52,14 +52,14 @@ awsum --version
 Windows (x86_64, PowerShell) — installs into `%LOCALAPPDATA%\Microsoft\WindowsApps`, on PATH by default since Windows 10:
 
 ```powershell
-$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.6/awsum-0.0.6-windows-x86_64.zip"
+$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force
 awsum --version
 ```
 
-Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.6; check the releases page for the current tag.
+Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.7; check the releases page for the current tag.
 
 ### Install target runtimes (per OS)
 
@@ -184,7 +184,7 @@ describe x = case x of
   Just n -> showInt32 n
 ```
 
-A `type X` with zero constructors is uninhabited. `empty type Never` is the special uninhabited "row identity" used in `IO Never a`.
+A `type X` with zero constructors is uninhabited — a distinct nominal label, usable as a phantom. `Never` is the standard library's one `empty type`: the **row identity** — uninhabited, and it drops out of any row (so `IO Never a` flows where `IO (e | …) a` is expected, and `(Never | A)` is just `A`). `empty type` is reserved to the prelude; user code cannot declare its own (it would only alias `Never`) — use `Never` for the row identity, or a plain `type X` for a distinct uninhabited type.
 
 ### Polymorphism
 
@@ -210,7 +210,7 @@ apply : (a -> b) -> a -> b
 apply f x = f x
 ```
 
-Lambdas are `\x y -> body`; they may close over outer parameters. Constructors are first-class (passable to higher-order functions, partially applicable). No backend has a closure runtime — the compiler defunctionalizes every function value at compile time, so this is free at runtime.
+Lambdas are `\x y -> body`; they may close over outer parameters. A lambda parameter may carry its type — `\(n : T) -> e` — pinning the input while the result stays inferred (needed where a `let`-bound or higher-order-function-passed lambda would otherwise leave the parameter unsolved; the inner pattern is a simple binder, not a destructure). Top-level parameters take their type from the mandatory signature instead. Constructors are first-class (passable to higher-order functions, partially applicable). No backend has a closure runtime — the compiler defunctionalizes every function value at compile time, so this is free at runtime.
 
 ### Pipe `|>`
 
@@ -263,7 +263,7 @@ f = do
 
 ### `let`
 
-`let n = e in body` is an expression. No defaulting on the RHS (annotate with `let n : T = e` if synthesis can't pin it). Destructuring LHS allowed; ascribing a destructuring let is rejected — ascribe the RHS. No shadowing. The RHS is evaluated once.
+`let n = e in body` is an expression. No defaulting on the RHS — annotate with `let n : T = e`, or put the signature on its own line above the definition (`let n : T` then `n = e`), if synthesis can't pin it; `awsum format` preserves whichever form you wrote. Destructuring LHS allowed; ascribing a destructuring let is rejected — ascribe the RHS. No shadowing. The RHS is evaluated once.
 
 ### IO
 
