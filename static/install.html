@@ -454,7 +454,7 @@
               copy):
             </p>
             <pre><code>mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-macos-aarch64.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
           </li>
           <li>
@@ -475,7 +475,7 @@ curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.
               copy):
             </p>
             <pre><code>mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-x86_64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
           </li>
           <li>
@@ -496,7 +496,7 @@ curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.
               copy):
             </p>
             <pre><code>mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-aarch64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin</code></pre>
           </li>
           <li>
@@ -517,7 +517,7 @@ curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.
               already on <code>PATH</code> by default since Windows 10
               (overwrites any existing copy):
             </p>
-            <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-windows-x86_64.zip"
+            <pre><code>$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code></pre>
@@ -557,16 +557,16 @@ Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force</code><
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 brew install llvm@15
 
-<span class="tok-cm"># JVM target — Java 11+</span>
+<span class="tok-cm"># JVM target — Java 25+</span>
 brew install openjdk
 
-<span class="tok-cm"># CLR target — .NET 9+</span>
+<span class="tok-cm"># CLR target — .NET 10+</span>
 brew install dotnet
 
 <span class="tok-cm"># WASM target — wasmtime with WASI</span>
 brew install wasmtime
 
-<span class="tok-cm"># JS target — Node 22+</span>
+<span class="tok-cm"># JS target — Node 26+</span>
 brew install node</code></pre>
         </div>
 
@@ -574,18 +574,18 @@ brew install node</code></pre>
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 sudo apt-get install -y clang-15
 
-<span class="tok-cm"># JVM target — Java 11+</span>
-sudo apt-get install -y default-jre
+<span class="tok-cm"># JVM target — Java 25+</span>
+sudo apt-get install -y openjdk-25-jre
 
-<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># CLR target — .NET 10+ (Ubuntu 24.04+; on older systems add</span>
 <span class="tok-cm"># Microsoft's APT repo first)</span>
-sudo apt-get install -y dotnet-sdk-9.0
+sudo apt-get install -y dotnet-sdk-10.0
 
 <span class="tok-cm"># WASM target — wasmtime with WASI</span>
 curl https://wasmtime.dev/install.sh -sSf | bash
 
-<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+<span class="tok-cm"># JS target — Node 26+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_26.x | sudo -E bash -
 sudo apt-get install -y nodejs</code></pre>
         </div>
 
@@ -593,18 +593,18 @@ sudo apt-get install -y nodejs</code></pre>
           <pre><code><span class="tok-cm"># LLVM target — clang 15+ (opaque pointers)</span>
 sudo apt-get install -y clang-15
 
-<span class="tok-cm"># JVM target — Java 11+</span>
-sudo apt-get install -y default-jre
+<span class="tok-cm"># JVM target — Java 25+</span>
+sudo apt-get install -y openjdk-25-jre
 
-<span class="tok-cm"># CLR target — .NET 9+ (Ubuntu 24.04+; on older systems add</span>
+<span class="tok-cm"># CLR target — .NET 10+ (Ubuntu 24.04+; on older systems add</span>
 <span class="tok-cm"># Microsoft's APT repo first)</span>
-sudo apt-get install -y dotnet-sdk-9.0
+sudo apt-get install -y dotnet-sdk-10.0
 
 <span class="tok-cm"># WASM target — wasmtime with WASI</span>
 curl https://wasmtime.dev/install.sh -sSf | bash
 
-<span class="tok-cm"># JS target — Node 22+ via NodeSource (apt's default is older)</span>
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+<span class="tok-cm"># JS target — Node 26+ via NodeSource (apt's default is older)</span>
+curl -fsSL https://deb.nodesource.com/setup_26.x | sudo -E bash -
 sudo apt-get install -y nodejs</code></pre>
         </div>
 
@@ -615,17 +615,17 @@ $Url  = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/L
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\llvm-installer.exe"
 Start-Process -Wait "$env:TEMP\llvm-installer.exe" -ArgumentList "/S"
 
-<span class="tok-cm"># JVM target — Java 11+</span>
-winget install EclipseAdoptium.Temurin.21.JDK
+<span class="tok-cm"># JVM target — Java 25+</span>
+winget install EclipseAdoptium.Temurin.25.JDK
 
-<span class="tok-cm"># CLR target — .NET 9+</span>
-winget install Microsoft.DotNet.SDK.9
+<span class="tok-cm"># CLR target — .NET 10+</span>
+winget install Microsoft.DotNet.SDK.10
 
 <span class="tok-cm"># WASM target — wasmtime with WASI</span>
 winget install BytecodeAlliance.Wasmtime
 
-<span class="tok-cm"># JS target — Node 22+</span>
-winget install OpenJS.NodeJS</code></pre>
+<span class="tok-cm"># JS target — Node 26+</span>
+winget install OpenJS.NodeJS.LTS</code></pre>
         </div>
       </div>
 
@@ -659,10 +659,10 @@ winget install OpenJS.NodeJS</code></pre>
         </li>
       </ul>
       <p>
-        Syntax highlighting, formatting, inline diagnostics, quick fixes,
+        Syntax highlighting, formatting, inline diagnostics, quick fixes, hover,
         outline, breadcrumbs, workspace symbols. Tested on Visual Studio Code;
-        expected to work in other VSIX / Open VSX-compatible editors — Cursor,
-        Windsurf, VSCodium, Positron, Trae, Theia.
+        also supported in Cursor, Windsurf and VSCodium, and expected to work in
+        other Open VSX-compatible editors built on VS Code 1.125 or newer.
       </p>
 
       <h4 class="editor-h4 editor-other">IntelliJ IDEA</h4>
@@ -685,7 +685,7 @@ winget install OpenJS.NodeJS</code></pre>
         </li>
       </ul>
       <p>
-        Syntax highlighting, formatting, inline diagnostics, quick fixes,
+        Syntax highlighting, formatting, inline diagnostics, quick fixes, hover,
         outline, breadcrumbs, workspace symbols. Tested on IntelliJ IDEA 2026.x;
         expected to work in other IntelliJ-based IDEs — Rider, CLion, WebStorm,
         PyCharm, GoLand, RubyMine, PhpStorm, RustRover, DataGrip, DataSpell,
@@ -706,7 +706,7 @@ winget install OpenJS.NodeJS</code></pre>
       </ul>
       <p>
         Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
-        fixes, outline, breadcrumbs, workspace symbols.
+        fixes, hover, outline, breadcrumbs, workspace symbols.
       </p>
 
       <h4 class="editor-h4 editor-other">Neovim</h4>
@@ -722,9 +722,9 @@ winget install OpenJS.NodeJS</code></pre>
       </ul>
       <p>
         Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
-        fixes, outline, breadcrumbs, workspace symbols. Requires Neovim 0.12+
-        and a C compiler — the bundled Tree-sitter parser is compiled on first
-        use.
+        fixes, hover, outline, breadcrumbs, workspace symbols. Requires Neovim
+        0.12+ and a C compiler — the bundled Tree-sitter parser is compiled on
+        first use.
       </p>
 
       <h4 class="editor-h4 editor-other">Emacs</h4>
@@ -740,8 +740,8 @@ winget install OpenJS.NodeJS</code></pre>
       </ul>
       <p>
         Syntax highlighting (Tree-sitter), formatting, inline diagnostics, quick
-        fixes, outline, workspace symbols. Requires Emacs 29.1+ and a C compiler
-        — the Tree-sitter parser is cloned and compiled on first use.
+        fixes, hover, outline, workspace symbols. Requires Emacs 31.1+ and a C
+        compiler — the Tree-sitter parser is cloned and compiled on first use.
       </p>
 
       <h4 class="editor-h4 editor-other">Other editors</h4>

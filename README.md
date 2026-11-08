@@ -46,7 +46,7 @@ GitHub Pages, custom domain `awsum-lang.org`. The deploy workflow ([`.github/wor
 
 ## AI use
 
-This site is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+This site is developed with substantial usage of generative AI.
 
 ## License
 
