@@ -4,7 +4,7 @@ Awsum is a correctness-first, statically-typed functional language in the ML / H
 
 This file is self-contained: reading it is enough to understand the language and write a program that compiles. Where prose examples and the bundled prelude could disagree, the prelude (`stdlib/Prelude.aww`, linked at the end) and the complete tested program near the bottom of this file are authoritative.
 
-Status: version 0.0.7, pre-1.0. Program type `cli` only so far (browser and library are planned). Targets: LLVM, JVM, CLR, WASM, JS.
+Status: version 0.0.8, pre-1.0. Program type: `cli`. Targets: LLVM, JVM, CLR, WASM, JS.
 
 ## What the language guarantees
 
@@ -26,7 +26,7 @@ macOS (Apple Silicon):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-macos-aarch64.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-macos-aarch64.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version          # verify; ~/.local/bin must be on PATH
 ```
@@ -35,7 +35,7 @@ Linux (x86_64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-x86_64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-linux-x86_64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -44,7 +44,7 @@ Linux (aarch64):
 
 ```sh
 mkdir -p ~/.local/bin
-curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-linux-aarch64-gnu.tar.gz \
+curl -fsSL https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-linux-aarch64-gnu.tar.gz \
   | tar -xzC ~/.local/bin
 awsum --version
 ```
@@ -52,14 +52,14 @@ awsum --version
 Windows (x86_64, PowerShell) — installs into `%LOCALAPPDATA%\Microsoft\WindowsApps`, on PATH by default since Windows 10:
 
 ```powershell
-$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.7/awsum-0.0.7-windows-x86_64.zip"
+$Url  = "https://github.com/awsum-lang/awsum/releases/download/v0.0.8/awsum-0.0.8-windows-x86_64.zip"
 $Dest = "$env:LOCALAPPDATA\Microsoft\WindowsApps"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\awsum.zip"
 Expand-Archive -Path "$env:TEMP\awsum.zip" -DestinationPath $Dest -Force
 awsum --version
 ```
 
-Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.7; check the releases page for the current tag.
+Other platforms (musl Linux, x86 macOS, BSD): build from source — see https://github.com/awsum-lang/awsum/blob/main/CONTRIBUTING.md#development-setup . The version pinned above is 0.0.8; check the releases page for the current tag.
 
 ### Install target runtimes (per OS)
 
@@ -69,20 +69,20 @@ macOS (Homebrew):
 
 ```sh
 brew install llvm@15     # LLVM target — clang 15+ (opaque pointers)
-brew install openjdk     # JVM target  — Java 11+
-brew install dotnet      # CLR target  — .NET 9+
+brew install openjdk     # JVM target  — Java 25+
+brew install dotnet      # CLR target  — .NET 10+
 brew install wasmtime    # WASM target — wasmtime (WASI)
-brew install node        # JS target   — Node 22+
+brew install node        # JS target   — Node 26+
 ```
 
 Linux (x86_64 and aarch64, apt):
 
 ```sh
 sudo apt-get install -y clang-15                                   # LLVM (clang 15+)
-sudo apt-get install -y default-jre                                # JVM (Java 11+)
-sudo apt-get install -y dotnet-sdk-9.0                             # CLR (.NET 9+; Ubuntu 24.04+, else add Microsoft's APT repo)
+sudo apt-get install -y openjdk-25-jre                             # JVM (Java 25+)
+sudo apt-get install -y dotnet-sdk-10.0                            # CLR (.NET 10+; Ubuntu 24.04+, else add Microsoft's APT repo)
 curl https://wasmtime.dev/install.sh -sSf | bash                   # WASM (wasmtime)
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -  # JS (Node 22+; apt's default is older)
+curl -fsSL https://deb.nodesource.com/setup_26.x | sudo -E bash -  # JS (Node 26+; apt's default is older)
 sudo apt-get install -y nodejs
 ```
 
@@ -93,19 +93,19 @@ Windows (PowerShell + winget):
 $Url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/LLVM-15.0.7-win64.exe"
 Invoke-WebRequest -Uri $Url -OutFile "$env:TEMP\llvm-installer.exe"
 Start-Process -Wait "$env:TEMP\llvm-installer.exe" -ArgumentList "/S"
-winget install EclipseAdoptium.Temurin.21.JDK   # JVM (Java 11+)
-winget install Microsoft.DotNet.SDK.9           # CLR (.NET 9+)
+winget install EclipseAdoptium.Temurin.25.JDK   # JVM (Java 25+)
+winget install Microsoft.DotNet.SDK.10          # CLR (.NET 10+)
 winget install BytecodeAlliance.Wasmtime        # WASM
-winget install OpenJS.NodeJS                    # JS (Node 22+)
+winget install OpenJS.NodeJS.LTS                # JS (Node 26+)
 ```
 
 ### Editor extensions
 
-LSP-based tooling (diagnostics, formatting, quick fixes, outline, workspace symbols):
+LSP-based tooling (diagnostics, formatting, quick fixes, hover, outline, workspace symbols):
 
 - VSCode — Visual Studio Marketplace (`awsum-lang.awsum-vscode`) or Open VSX.
 - IntelliJ IDEA (and other JetBrains IDEs) — JetBrains Marketplace (plugin "awsum").
-- Zed, Neovim (0.12+), Emacs (29.1+) — install from their repos (linked at the end of this file).
+- Zed, Neovim (0.12+), Emacs (31.1+) — install from their repos (linked at the end of this file).
 
 ### CLI usage
 
@@ -303,7 +303,7 @@ main =
 
 ### No shadowing; the underscore convention
 
-A new binding may not reuse a name visible in any enclosing scope of the same module — shadowing is a compile error (the prelude is a separate module, so user names never clash with it). A leading `_` marks a binding intentionally unused; referencing any `_`-prefixed name anywhere is an error. A bare `_` is a wildcard that binds nothing. An unused non-`_` binding is a warning (`awsum check --strict` escalates it).
+Identifiers are ASCII — letters, digits, `_` and `'`, starting with a letter or `_` — and at most 1024 characters; comments and string literals take any Unicode. A new binding may not reuse a name visible in any enclosing scope of the same module — shadowing is a compile error (the prelude is a separate module, so user names never clash with it). A leading `_` marks a binding intentionally unused; referencing any `_`-prefixed name anywhere is an error. A bare `_` is a wildcard that binds nothing. An unused non-`_` binding is a warning (`awsum check --strict` escalates it).
 
 ### Comments and docstrings
 
